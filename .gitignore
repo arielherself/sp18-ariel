@@ -14,6 +14,19 @@
 *.jar
 *.war
 *.nar
+*
+!*/
+!**.java
+!**.txt
+!**.json
+!.expelimicate
+!.gitignore
+.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
 *.ear
 *.zip
 *.tar.gz
@@ -22,3 +35,36 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+hs_err_pid*
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+*.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
