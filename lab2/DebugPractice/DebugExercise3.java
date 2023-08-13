@@ -13,7 +13,7 @@ public class DebugExercise3 {
                 int newTotal = totalTurnips + numAvailable;
                 totalTurnips = newTotal;
             }
-            in.readLine();
+//            in.readLine();
         }
         return totalTurnips;
     }
