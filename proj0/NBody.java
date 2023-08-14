@@ -13,7 +13,7 @@ public class NBody {
         Planet[] result = new Planet[n];
         for (int i = 0; i < n; ++i) {
             result[i] = new Planet(in.readDouble(), in.readDouble(), in.readDouble(),
-                    in.readDouble(), in.readDouble(), "images/" + in.readString());
+                    in.readDouble(), in.readDouble(), in.readString());
         }
         return result;
     }
