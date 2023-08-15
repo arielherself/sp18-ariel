@@ -1,7 +1,7 @@
 public class ArrayDeque<T> {
-    T[] data;
-    int size, capacity;
-    int firstPos;
+    private T[] data;
+    private int size, capacity;
+    private int firstPos;
 
     public ArrayDeque() {
         size = 0;
@@ -34,26 +34,26 @@ public class ArrayDeque<T> {
     }
 
     private void permissiveShrink() {
-        if ((double) size / capacity < 0.25) {
+        if ((double) size / capacity < 0.25 && size > 10) {
             shrink();
         }
     }
 
     public void addFirst(T item) {
-        ++size;
         if (firstPos == 0) {
             expandLeft();
         }
         --firstPos;
         data[firstPos] = item;
+        ++size;
     }
 
     public void addLast(T item) {
-        ++size;
-        if (size > capacity) {
+        if (size >= capacity) {
             expand();
         }
-        data[size - 1] = item;
+        data[size] = item;
+        ++size;
     }
 
     public boolean isEmpty() {
@@ -79,6 +79,7 @@ public class ArrayDeque<T> {
         /* TODO: edge case */
         T result = data[firstPos];
         ++firstPos;
+        --size;
         permissiveShrink();
         return result;
     }
@@ -92,7 +93,7 @@ public class ArrayDeque<T> {
     }
 
     public T get(int index) {
-        return data[index];
+        return data[firstPos + index];
     }
 
 
