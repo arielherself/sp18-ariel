@@ -49,10 +49,10 @@ public class ArrayDeque<T> {
     }
 
     public void addLast(T item) {
-        if (size >= capacity) {
+        if (firstPos + size >= capacity) {
             expand();
         }
-        data[size] = item;
+        data[firstPos + size] = item;
         ++size;
     }
 
@@ -86,7 +86,7 @@ public class ArrayDeque<T> {
 
     public T removeLast() {
         /* TODO: edge case */
-        T result = data[size - 1];
+        T result = data[firstPos + size - 1];
         --size;
         permissiveShrink();
         return result;
