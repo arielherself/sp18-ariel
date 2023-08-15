@@ -54,18 +54,22 @@ public class ArrayDequeTest {
         ArrayDeque<String> ad = new ArrayDeque<>();
         ad.addLast("Hello");
         ad.addLast("world");
-        assertEquals("world", ad.removeLast());
+        ad.addLast("from");
+        ad.addLast("Java");
+        assertEquals("Java", ad.removeLast());
         assertEquals("Hello", ad.get(0));
-        assertEquals(1, ad.size());
+        assertEquals(3, ad.size());
     }
 
     @Test
     public void testRemoveFirst() {
         ArrayDeque<String> ad = new ArrayDeque<>();
+        ad.addFirst("Java");
+        ad.addFirst("from");
         ad.addFirst("world");
         ad.addFirst("Hello");
         assertEquals("Hello", ad.removeFirst());
         assertEquals("world", ad.get(0));
-        assertEquals(1, ad.size());
+        assertEquals(3, ad.size());
     }
 }

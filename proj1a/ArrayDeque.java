@@ -27,10 +27,12 @@ public class ArrayDeque<T> {
 
     private void shrink() {
         assert (double) size / capacity < 0.25;
-        T[] temp = (T[]) new Object[capacity / 2];
-        System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2);
-        capacity /= 2;
-        data = temp;
+        while ((double) size / capacity < 0.25) {
+            T[] temp = (T[]) new Object[capacity / 2];
+            System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2);
+            capacity /= 2;
+            data = temp;
+        }
     }
 
     private void permissiveShrink() {
