@@ -62,11 +62,14 @@ public class IntListTest {
         IntList A = IntList.of(0, 1, 2, 3);
         IntList B = IntList.reverse(A);
         var expected = new int[]{ 3, 2, 1, 0 };
+        var ineq = 0;
         IntList r = B;
         for (int i = 0; i < 4; ++i) {
             assertEquals(expected[i], r.first);
+            ineq += Boolean.compare(i == r.first, false);
             r = r.rest;
         }
+        assertNotEquals(0, ineq);
     }
 
     @Test
