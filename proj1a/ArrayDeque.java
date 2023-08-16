@@ -21,7 +21,7 @@ public class ArrayDeque<T> {
     private void expand() {
         capacity *= 2;
         T[] temp = (T[]) new Object[capacity];
-        System.arraycopy(data, 0, temp, 0, size);
+        System.arraycopy(data, 0, temp, 0, firstPos + size);
         data = temp;
     }
 
@@ -30,6 +30,7 @@ public class ArrayDeque<T> {
         while ((double) size / capacity < 0.25) {
             T[] temp = (T[]) new Object[capacity / 2];
             System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2);
+            firstPos -= firstPos / 2;
             capacity /= 2;
             data = temp;
         }
