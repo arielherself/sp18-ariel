@@ -90,7 +90,6 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast() {
-        /* TODO: edge case */
         if (size == 0) {
             return null;
         }

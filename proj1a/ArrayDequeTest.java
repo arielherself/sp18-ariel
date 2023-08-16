@@ -1,7 +1,5 @@
 import org.junit.Test;
 
-import java.lang.reflect.Array;
-
 import static org.junit.Assert.*;
 
 public class ArrayDequeTest {
@@ -110,7 +108,7 @@ public class ArrayDequeTest {
         for (int i = 99; i >= 0; --i) {
             ad.addFirst(i);
         }
-        for (int i = 0; i <100; ++i) {
+        for (int i = 0; i < 100; ++i) {
             assertEquals(Integer.valueOf(i), ad.removeFirst());
         }
     }
