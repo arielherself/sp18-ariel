@@ -237,5 +237,16 @@ public class IntList {
         out.format(")");
         return out.toString();
     }
+
+    public static IntList reverse(IntList l) {
+        IntList result;
+        if (l.rest != null) {
+            result = reverse(l.rest);
+            IntList.dcatenate(result, new IntList(l.first, null));
+        } else {
+            result = new IntList(l.first, null);
+        }
+        return result;
+    }
 }
 
