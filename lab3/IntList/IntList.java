@@ -240,7 +240,9 @@ public class IntList {
 
     public static IntList reverse(IntList l) {
         IntList result;
-        if (l.rest != null) {
+        if (l == null) {
+            return null;
+        } else if (l.rest != null) {
             result = reverse(l.rest);
             IntList.dcatenate(result, new IntList(l.first, null));
         } else {
