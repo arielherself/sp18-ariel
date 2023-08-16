@@ -248,6 +248,7 @@ public class IntList {
         } else {
             result = new IntList(l.first, null);
         }
+        l = result;
         return result;
     }
 }
