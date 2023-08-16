@@ -239,16 +239,24 @@ public class IntList {
     }
 
     public static IntList reverse(IntList l) {
-        IntList result;
         if (l == null) {
             return null;
-        } else if (l.rest != null) {
-            result = reverse(l.rest);
+        } else {
+            IntList r = reverseCore(l);
+            l.first = r.first;
+            l.rest = r.rest;
+            return r;
+        }
+    }
+
+    public static IntList reverseCore(IntList l) {
+        IntList result;
+        if (l.rest != null) {
+            result = reverseCore(l.rest);
             IntList.dcatenate(result, new IntList(l.first, null));
         } else {
             result = new IntList(l.first, null);
         }
-        l = result;
         return result;
     }
 }
