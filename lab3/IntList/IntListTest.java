@@ -58,6 +58,18 @@ public class IntListTest {
     }
 
     @Test
+    public void testReverse() {
+        IntList A = IntList.of(0, 1, 2, 3);
+        IntList B = IntList.reverse(A);
+        var expected = new int[]{ 3, 2, 1, 0 };
+        IntList r = B;
+        for (int i = 0; i < 4; ++i) {
+            assertEquals(expected[i], r.first);
+            r = r.rest;
+        }
+    }
+
+    @Test
     public void testCatenate() {
         IntList A = IntList.of(1, 2, 3);
         IntList B = IntList.of(4, 5, 6);
