@@ -96,4 +96,22 @@ public class ArrayDequeTest {
         assertEquals(Integer.valueOf(15), ad.removeFirst());
         assertEquals(Integer.valueOf(7), ad.get(7));
     }
+
+    @Test
+    public void test2() {
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        for (int i = 0; i < 100; ++i) {
+            ad.addFirst(i);
+        }
+        for (int i = 99; i >= 0; --i) {
+            assertEquals(Integer.valueOf(i), ad.removeFirst());
+        }
+        assertTrue(ad.isEmpty());
+        for (int i = 99; i >= 0; --i) {
+            ad.addFirst(i);
+        }
+        for (int i = 0; i <100; ++i) {
+            assertEquals(Integer.valueOf(i), ad.removeFirst());
+        }
+    }
 }

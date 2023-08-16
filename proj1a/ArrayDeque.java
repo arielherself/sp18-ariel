@@ -28,10 +28,10 @@ public class ArrayDeque<T> {
     private void shrink() {
         assert (double) size / capacity < 0.25;
         while ((double) size / capacity < 0.25) {
-            T[] temp = (T[]) new Object[capacity / 2];
-            System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2 - firstPos / 2);
+            T[] temp = (T[]) new Object[(size + capacity) / 2 + 1];
+            System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2 + 1);
             firstPos -= firstPos / 2;
-            capacity /= 2;
+            capacity = (size + capacity) / 2 + 1;
             data = temp;
         }
     }
@@ -79,7 +79,6 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
-        /* TODO: edge case */
         if (size == 0) {
             return null;
         }
