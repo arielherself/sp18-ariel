@@ -15,4 +15,25 @@ public class TestPalindrome {
         }
         assertEquals("persiflage", actual);
     }
+
+    private void checkIsPalindrome(String s, boolean expected) {
+        if (expected) {
+            assertTrue(palindrome.isPalindrome(s));
+        } else {
+            assertFalse(palindrome.isPalindrome(s));
+        }
+    }
+
+    @Test
+    public void testIsPalindrome() {
+        checkIsPalindrome("", true);
+        checkIsPalindrome("a", true);
+        checkIsPalindrome("ab", false);
+        checkIsPalindrome("noon", true);
+        checkIsPalindrome("horse", false);
+        checkIsPalindrome("rancor", false);
+        checkIsPalindrome("aaaaab", false);
+        checkIsPalindrome("racecar", true);
+        checkIsPalindrome("Racecar", false);
+    }
 }
