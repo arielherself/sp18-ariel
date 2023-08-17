@@ -1,5 +1,5 @@
-public class OffByN {
-    private int N;
+public class OffByN implements CharacterComparator {
+    private final int N;
     public OffByN(int N) {
         this.N = N;
     }
