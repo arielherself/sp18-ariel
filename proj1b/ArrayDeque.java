@@ -1,0 +1,115 @@
+public class ArrayDeque<T> implements Deque<T> {
+    private T[] data;
+    private int size, capacity;
+    private int firstPos;
+
+    public ArrayDeque() {
+        size = 0;
+        capacity = 8;
+        firstPos = 0;
+        data = (T[]) new Object[8];
+    }
+
+    private void expandLeft() {
+        firstPos = capacity;
+        capacity *= 2;
+        T[] temp = (T[]) new Object[capacity];
+        System.arraycopy(data, 0, temp, firstPos, size);
+        data = temp;
+    }
+
+    private void expand() {
+        capacity *= 2;
+        T[] temp = (T[]) new Object[capacity];
+        System.arraycopy(data, 0, temp, 0, firstPos + size);
+        data = temp;
+    }
+
+    private void shrink() {
+        assert (double) size / capacity < 0.25;
+        while ((double) size / capacity < 0.25) {
+            T[] temp = (T[]) new Object[(size + capacity) / 2 + 1];
+            System.arraycopy(data, firstPos / 2, temp, 0, (size + capacity) / 2 + 1);
+            firstPos -= firstPos / 2;
+            capacity = (size + capacity) / 2 + 1;
+            data = temp;
+        }
+    }
+
+    private void permissiveShrink() {
+        if ((double) size / capacity < 0.25 && size > 10) {
+            shrink();
+        }
+    }
+
+    @Override
+    public void addFirst(T item) {
+        if (firstPos == 0) {
+            expandLeft();
+        }
+        --firstPos;
+        data[firstPos] = item;
+        ++size;
+    }
+
+    @Override
+    public void addLast(T item) {
+        if (firstPos + size >= capacity) {
+            expand();
+        }
+        data[firstPos + size] = item;
+        ++size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public void printDeque() {
+        if (size == 0) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder(String.valueOf(data[0]));
+        for (int i = 1; i < size; ++i) {
+            sb.append(" ").append(data[i]);
+        }
+        System.out.println(sb);
+    }
+
+    @Override
+    public T removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        T result = data[firstPos];
+        ++firstPos;
+        --size;
+        permissiveShrink();
+        return result;
+    }
+
+    @Override
+    public T removeLast() {
+        if (size == 0) {
+            return null;
+        }
+        T result = data[firstPos + size - 1];
+        --size;
+        permissiveShrink();
+        return result;
+    }
+
+    @Override
+    public T get(int index) {
+        return data[firstPos + index];
+    }
+
+
+}
