@@ -29,6 +29,8 @@ public class TestPalindrome {
         checkIsPalindrome("", true);
         checkIsPalindrome("a", true);
         checkIsPalindrome("ab", false);
+        checkIsPalindrome("aba", true);
+        checkIsPalindrome("Aba", false);
         checkIsPalindrome("noon", true);
         checkIsPalindrome("horse", false);
         checkIsPalindrome("rancor", false);
