@@ -2,7 +2,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-record funcCallbackRecord(String functionName, int argument) {
+class FuncCallbackRecord {
+    private final String functionName;
+    private final int argument;
+
+    public FuncCallbackRecord(String functionName, int argument) {
+        this.functionName = functionName;
+        this.argument = argument;
+    }
+
     @Override
     public String toString() {
         if (argument == -1) {
@@ -14,7 +22,16 @@ record funcCallbackRecord(String functionName, int argument) {
 }
 
 class Stack<T> {
-    private record ListNode<T> (T item, ListNode<T> prev) {}
+
+    private static class ListNode<T>  {
+        public T item;
+        public ListNode<T> prev;
+
+        public ListNode(T item, ListNode<T> prev) {
+            this.item = item;
+            this.prev = prev;
+        }
+    }
 
     ListNode<T> last;
 
@@ -23,8 +40,8 @@ class Stack<T> {
     }
 
     public T pop() {
-        T result = last.item();
-        last = last.prev();
+        T result = last.item;
+        last = last.prev;
         return result;
     }
 
@@ -33,8 +50,8 @@ class Stack<T> {
         StringBuilder sb = new StringBuilder();
         ListNode<T> ref = last;
         while (ref != null) {
-            sb.append(ref.item()).append("\n");
-            ref = ref.prev();
+            sb.append(ref.item).append("\n");
+            ref = ref.prev;
         }
         return sb.toString();
     }
@@ -47,7 +64,7 @@ public class TestArrayDequeGold {
         ArrayDequeSolution<Integer> provenCorrect = new ArrayDequeSolution<>();
 
         final int rounds = 1000;
-        Stack<funcCallbackRecord> history = new Stack<>();
+        Stack<FuncCallbackRecord> history = new Stack<>();
         int choice, argument, dequeLen = 0;
         for (int i = 0; i < rounds; ++i) {
             argument = StdRandom.uniform(10000);
@@ -55,27 +72,27 @@ public class TestArrayDequeGold {
                 choice = StdRandom.uniform(4);
                 switch (choice) {
                     case 0 -> {
-                        history.push(new funcCallbackRecord("addFirst", argument));
+                        history.push(new FuncCallbackRecord("addFirst", argument));
                         toTest.addFirst(argument);
                         provenCorrect.addFirst(argument);
                         ++dequeLen;
                     }
                     case 1 -> {
-                        history.push(new funcCallbackRecord("addLast", argument));
+                        history.push(new FuncCallbackRecord("addLast", argument));
                         toTest.addLast(argument);
                         provenCorrect.addLast(argument);
                         ++dequeLen;
                     }
                     case 2 -> {
                         var a = provenCorrect.removeFirst();
-                        history.push(new funcCallbackRecord("removeFirst", -1));
+                        history.push(new FuncCallbackRecord("removeFirst", -1));
                         var b = toTest.removeFirst();
                         assertEquals(history.toString(), a, b);
                         --dequeLen;
                     }
                     case 3 -> {
                         var a = provenCorrect.removeLast();
-                        history.push(new funcCallbackRecord("removeLast", -1));
+                        history.push(new FuncCallbackRecord("removeLast", -1));
                         var b = toTest.removeLast();
                         assertEquals(history.toString(), a, b);
                         --dequeLen;
@@ -87,13 +104,13 @@ public class TestArrayDequeGold {
                 choice = Boolean.compare(StdRandom.bernoulli(), false);
                 switch (choice) {
                     case 0 -> {
-                        history.push(new funcCallbackRecord("addFirst", argument));
+                        history.push(new FuncCallbackRecord("addFirst", argument));
                         toTest.addFirst(argument);
                         provenCorrect.addFirst(argument);
                         ++dequeLen;
                     }
                     case 1 -> {
-                        history.push(new funcCallbackRecord("addLast", argument));
+                        history.push(new FuncCallbackRecord("addLast", argument));
                         toTest.addLast(argument);
                         provenCorrect.addLast(argument);
                         ++dequeLen;
