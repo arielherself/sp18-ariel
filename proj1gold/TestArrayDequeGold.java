@@ -22,7 +22,6 @@ class FuncCallbackRecord {
 }
 
 class Stack<T> {
-
     private static class ListNode<T>  {
         public T item;
         public ListNode<T> prev;
@@ -66,57 +65,56 @@ public class TestArrayDequeGold {
         final int rounds = 1000;
         Stack<FuncCallbackRecord> history = new Stack<>();
         int choice, argument, dequeLen = 0;
+        Integer a, b;
         for (int i = 0; i < rounds; ++i) {
             argument = StdRandom.uniform(10000);
             if (dequeLen > 0) {
                 choice = StdRandom.uniform(4);
                 switch (choice) {
-                    case 0 -> {
+                    case 0:
                         history.push(new FuncCallbackRecord("addFirst", argument));
                         toTest.addFirst(argument);
                         provenCorrect.addFirst(argument);
                         ++dequeLen;
-                    }
-                    case 1 -> {
+                        break;
+                    case 1:
                         history.push(new FuncCallbackRecord("addLast", argument));
                         toTest.addLast(argument);
                         provenCorrect.addLast(argument);
                         ++dequeLen;
-                    }
-                    case 2 -> {
-                        var a = provenCorrect.removeFirst();
+                        break;
+                    case 2:
+                        a = provenCorrect.removeFirst();
                         history.push(new FuncCallbackRecord("removeFirst", -1));
-                        var b = toTest.removeFirst();
+                        b = toTest.removeFirst();
                         assertEquals(history.toString(), a, b);
                         --dequeLen;
-                    }
-                    case 3 -> {
-                        var a = provenCorrect.removeLast();
+                        break;
+                    case 3:
+                        a = provenCorrect.removeLast();
                         history.push(new FuncCallbackRecord("removeLast", -1));
-                        var b = toTest.removeLast();
+                        b = toTest.removeLast();
                         assertEquals(history.toString(), a, b);
                         --dequeLen;
-                    }
-                    default -> {
-                    }
+                        break;
+                    default:
                 }
             } else {
                 choice = Boolean.compare(StdRandom.bernoulli(), false);
                 switch (choice) {
-                    case 0 -> {
+                    case 0:
                         history.push(new FuncCallbackRecord("addFirst", argument));
                         toTest.addFirst(argument);
                         provenCorrect.addFirst(argument);
                         ++dequeLen;
-                    }
-                    case 1 -> {
+                        break;
+                    case 1:
                         history.push(new FuncCallbackRecord("addLast", argument));
                         toTest.addLast(argument);
                         provenCorrect.addLast(argument);
                         ++dequeLen;
-                    }
-                    default -> {
-                    }
+                        break;
+                    default:
                 }
             }
 
