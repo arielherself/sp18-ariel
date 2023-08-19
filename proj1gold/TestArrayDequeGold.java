@@ -117,7 +117,7 @@ public class TestArrayDequeGold {
                     default:
                 }
             }
-
+            assertEquals(history.toString(), provenCorrect.size(), toTest.size());
         }
     }
 }
