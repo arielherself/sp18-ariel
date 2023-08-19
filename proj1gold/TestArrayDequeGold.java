@@ -47,12 +47,17 @@ class Stack<T> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        ListNode<T> ref = last;
-        while (ref != null) {
-            sb.append(ref.item).append("\n");
-            ref = ref.prev;
-        }
+        toStringCore(sb, last);
         return sb.toString();
+    }
+
+    private void toStringCore(StringBuilder sb, ListNode<T> node) {
+        if (node == null) {
+            return ;
+        } else {
+            toStringCore(sb, node.prev);
+            sb.append(node.item).append("\n");
+        }
     }
 }
 
