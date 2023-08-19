@@ -58,6 +58,17 @@ class Stack<T> {
 
 public class TestArrayDequeGold {
     @Test
+    public void testCallbackHistory() {
+        Stack<FuncCallbackRecord> history = new Stack<>();
+        history.push(new FuncCallbackRecord("addFirst", 5));
+        history.push(new FuncCallbackRecord("removeFirst", -1));
+        history.push(new FuncCallbackRecord("addLast", 4));
+        history.push(new FuncCallbackRecord("removeLast", -1));
+        String expected = "addFirst(5)\nremoveFirst()\naddLast(4)\nremoveLast()\n";
+        assertEquals(expected, history.toString());
+    }
+
+    @Test
     public void testArrayDeque() {
         StudentArrayDeque<Integer> toTest = new StudentArrayDeque<>();
         ArrayDequeSolution<Integer> provenCorrect = new ArrayDequeSolution<>();
