@@ -1,6 +1,7 @@
 package synthesizer;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
@@ -73,6 +74,19 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
 
     public int fillCount() {
         return fillCount;
+    }
+
+    public int index(T toFind) {
+        for (int i = 0; i < fillCount; ++i) {
+            if (Objects.equals(rb[(first + i) % capacity], toFind)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean contains(T toFind) {
+        return !(index(toFind) == -1);
     }
 
     // TODO: When you get to part 5, implement the needed code to support iteration.
