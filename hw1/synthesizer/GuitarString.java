@@ -1,7 +1,6 @@
 package synthesizer;
 
 import java.util.LinkedList;
-import java.util.Set;
 
 public class GuitarString {
     /** Constants. Do not change. In case you're curious, the keyword final means
