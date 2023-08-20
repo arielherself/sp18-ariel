@@ -113,7 +113,7 @@ public class HexWorld {
     }
 
     public static void main(String[] args) {
-        HexWorld world = new HexWorld(6);
+        HexWorld world = new HexWorld(4);
         world.init(825);
         world.fillAllBlocksWithRandom();
         world.show();
