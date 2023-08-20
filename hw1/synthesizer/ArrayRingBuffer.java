@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     private static class ArrayRingBufferIterator<T> implements Iterator<T> {
-        private T[] data;
+        private final T[] data;
         private final int size, first, last;
         private int currentPosition;
         public ArrayRingBufferIterator(T[] array, int size, int first, int last) {
@@ -34,7 +34,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next enqueue. */
     private int last;
     /* Array for storing the buffer data. */
-    private T[] rb;
+    private final T[] rb;
 
     /**
      * Create a new ArrayRingBuffer with the given capacity.
