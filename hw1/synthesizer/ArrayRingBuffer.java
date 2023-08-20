@@ -4,6 +4,31 @@ import java.util.Iterator;
 import java.util.Objects;
 
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
+    private static class ArrayRingBufferIterator<T> implements Iterator<T> {
+        private T[] data;
+        private final int size, first, last;
+        private int currentPosition;
+        public ArrayRingBufferIterator(T[] array, int size, int first, int last) {
+            data = array;
+            this.size = size;
+            this.first = first;
+            this.last = last;
+            currentPosition = first;
+        }
+
+        public boolean hasNext() {
+            return currentPosition == last;
+        }
+
+        public T next() {
+            if (!hasNext()) {
+                throw new ArrayIndexOutOfBoundsException("StopIteration");
+            }
+            currentPosition = (currentPosition + 1) % size;
+            return data[currentPosition];
+        }
+    }
+
     /* Index for the next dequeue or peek. */
     private int first;            // index for the next dequeue or peek
     /* Index for the next enqueue. */
@@ -93,5 +118,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return sb.toString();
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
+    public Iterator<T> iterator() {
+        return new ArrayRingBufferIterator<>(rb, capacity, first, last);
+    }
 }
