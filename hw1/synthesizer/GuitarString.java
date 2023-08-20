@@ -1,5 +1,8 @@
 package synthesizer;
 
+import java.util.LinkedList;
+import java.util.Set;
+
 public class GuitarString {
     /** Constants. Do not change. In case you're curious, the keyword final means
      * the values cannot be changed at runtime. We'll discuss this and other topics
@@ -23,11 +26,13 @@ public class GuitarString {
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
         double r;
+        LinkedList<Double> cache = new LinkedList<>();
         for (int i = 0; i < buffer.fillCount(); ++i) {
             buffer.dequeue();
             do {
                 r = Math.random() - 0.5;
-            } while (((ArrayRingBuffer<Double>) buffer).contains(r));
+            } while (cache.contains(r));
+            cache.add(r);
             buffer.enqueue(r);
         }
     }
