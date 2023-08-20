@@ -90,14 +90,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return rb[first];
     }
 
-    public int capacity() {
-        return capacity;
-    }
-
-    public int fillCount() {
-        return fillCount;
-    }
-
     public int index(T toFind) {
         for (int i = 0; i < fillCount; ++i) {
             if (Objects.equals(rb[(first + i) % capacity], toFind)) {
