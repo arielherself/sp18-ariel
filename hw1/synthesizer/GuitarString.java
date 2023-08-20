@@ -48,9 +48,4 @@ public class GuitarString {
     public double sample() {
         return buffer.peek();
     }
-
-    @Override
-    public String toString() {
-        return buffer.toString();
-    }
 }
