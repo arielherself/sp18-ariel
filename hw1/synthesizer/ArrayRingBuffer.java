@@ -90,29 +90,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return rb[first];
     }
 
-    public int index(T toFind) {
-        for (int i = 0; i < fillCount; ++i) {
-            if (Objects.equals(rb[(first + i) % capacity], toFind)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public boolean contains(T toFind) {
-        return !(index(toFind) == -1);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getName() + "[");
-        for (int i = 0; i < fillCount; ++i) {
-            sb.append(rb[(first + i) % capacity])
-                    .append(i == fillCount - 1 ? "]" : ", ");
-        }
-        return sb.toString();
-    }
-
     public Iterator<T> iterator() {
         return new ArrayRingBufferIterator<>(rb, capacity, first, last);
     }
