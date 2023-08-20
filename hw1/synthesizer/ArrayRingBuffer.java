@@ -3,7 +3,6 @@ package synthesizer;// TODO: Make sure to make this class a part of the synthesi
 
 import java.util.Iterator;
 
-//TODO: Make sure to make this class and all of its methods public
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;            // index for the next dequeue or peek
@@ -33,11 +32,15 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
             throw new RuntimeException("Ring Buffer Overflow");
         }
         ++fillCount;
-        ++last;
-        if (last == capacity) {
-            last = 0;
+        if (rb[first] == null) {
+            rb[first] = x;
+        } else {
+            ++last;
+            if (last == capacity) {
+                last = 0;
+            }
+            rb[last] = x;
         }
-        rb[last] = x;
     }
 
     /**
