@@ -1,5 +1,4 @@
-package synthesizer;// TODO: Make sure to make this class a part of the synthesizer package
-// package <package name>;
+package synthesizer;
 
 import java.util.Iterator;
 
