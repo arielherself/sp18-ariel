@@ -83,5 +83,15 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return !(index(toFind) == -1);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getName() + "[");
+        for (int i = 0; i < fillCount; ++i) {
+            sb.append(rb[(first + i) % capacity])
+                    .append(i == fillCount - 1 ? "]" : ", ");
+        }
+        return sb.toString();
+    }
+
     // TODO: When you get to part 5, implement the needed code to support iteration.
 }
