@@ -3,7 +3,8 @@ package byog.util;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-import java.time.LocalTime;
+import javax.swing.text.Element;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class World extends MirrorCompatible<TETile> {
@@ -26,19 +27,7 @@ public class World extends MirrorCompatible<TETile> {
         }
     }
 
-    public boolean checkMergeability(ElementBase<TETile> element) {
-        for (int i = 0; i < element.height; ++i) {
-            for (int j = 0; j < element.width; ++j) {
-                if (world[element.positionX + i][element.positionY + j] != Tileset.NOTHING) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public void merge(ElementBase<TETile> element) {
-        assert checkMergeability(element);
         for (int i = 0; i < element.height; ++i) {
             System.arraycopy(element.data[i], 0, world[element.positionX + i], element.positionY, element.width);
         }
@@ -65,7 +54,7 @@ public class World extends MirrorCompatible<TETile> {
                 world[x+1][y+1] == Tileset.NOTHING;
     }
 
-    public boolean isNoSpaceLeft() {
+    public boolean isNoSpaceLeftForRooms() {
         for (int i = 1; i < height - 1; ++i) {
             for (int j = 1; j < width - 1; ++j) {
                 if (hasSpaceAround(i, j)) {
@@ -113,7 +102,7 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     public ElementGenerator.Room generateMergeableRoom() {
-        if (isNoSpaceLeft()) {
+        if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
         Random random = new Random();
@@ -148,6 +137,119 @@ public class World extends MirrorCompatible<TETile> {
                 y2 = findRightBar(x, i);
             }
         }
+        y1 = random.nextInt(y1, y - 1);
+        y2 = random.nextInt(y + 2, y2 + 1);
         return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
+    }
+
+
+    public ElementGenerator.Door generateLockedDoor() {
+        LinkedList<Integer> wallPositionX = new LinkedList<>();
+        LinkedList<Integer> wallPositionY = new LinkedList<>();
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                if (world[i][j] == Tileset.WALL) {
+                    wallPositionX.addLast(i);
+                    wallPositionY.addLast(j);
+                }
+            }
+        }
+        Random random = new Random();
+        final int targetNo = random.nextInt(0, wallPositionX.size());
+        return new ElementGenerator.Door(wallPositionX.get(targetNo), wallPositionY.get(targetNo));
+    }
+
+    public ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        // Keep the roomA at the left of the roomB.
+        if (roomA.positionY > roomB.positionY) {
+            ElementGenerator.Room temp = roomA;
+            roomA = roomB;
+            roomB = temp;
+        }
+
+        int start = -1, end = -1;
+        for (int i = roomA.positionX; i < roomA.positionX + roomA.height; ++i) {
+            if (i >= roomB.positionX && i <= roomB.positionX + roomB.height) {
+                if (start == -1) {
+                    start = i;
+                }
+            } else {
+                if (start != -1) {
+                    end = i;
+                    break;
+                }
+            }
+        }
+
+        boolean ableToBuild = false;
+        for (int x = start; x < end; ++x) {
+            boolean connectable = true;
+            for (int i = roomA.positionY + roomA.width; i < roomB.positionY; ++i) {
+                if (!hasVerticalSpaceAround(x, i)) {
+                    connectable = false;
+                    break;
+                }
+            }
+            if (connectable) {
+                ableToBuild = true;
+                break;
+            }
+        }
+        if (!ableToBuild) {
+            throw new RuntimeException("Unable to build a horizontalHallway");
+        }
+
+        Random random = new Random();
+        int x;
+        ElementGenerator.Hallway result;
+        boolean free;
+        do {
+            x = random.nextInt(start, end);
+            free = true;
+            for (int i = roomA.positionY + roomA.width; i < roomB.positionY; ++i) {
+                if (!hasVerticalSpaceAround(x, i)) {
+                    free = false;
+                    break;
+                }
+            }
+        } while (!free);
+
+        // Finally build the hallway after checking there's no obstacles
+        return new ElementGenerator.Hallway(3, roomB.positionY - roomA.positionY -roomA.width + 2,
+                x, roomA.positionY + roomA.width - 1);
+    }
+
+    public ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        // TODO: implement it
+        return null;
+    }
+
+    public ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        for (int i = roomA.positionX; i < roomA.positionX + roomA.height; ++i) {
+            if (i >= roomB.positionX && i <= roomB.positionX + roomB.height) {
+                try {
+                    return buildHorizontalHallway(roomA, roomB);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+
+        for (int j = roomA.positionY; j < roomA.positionY + roomA.width; ++j) {
+            if (j >= roomB.positionY && j <= roomB.positionY + roomB.width) {
+                try {
+                    return buildVerticalHallway(roomA, roomB);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public ElementGenerator.Hallway generateHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
     }
 }
