@@ -35,10 +35,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         if (rb[first] == null) {
             rb[first] = x;
         } else {
-            ++last;
-            if (last == capacity) {
-                last = 0;
-            }
+            last = (last + 1) % capacity;
             rb[last] = x;
         }
     }
@@ -54,10 +51,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         }
         --fillCount;
         T result = rb[first];
-        ++first;
-        if (first == capacity) {
-            first = 0;
-        }
+        first = (first + 1) % capacity;
         return result;
     }
 
