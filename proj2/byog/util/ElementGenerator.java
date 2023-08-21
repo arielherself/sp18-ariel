@@ -49,6 +49,30 @@ public final class ElementGenerator {
         }
     }
 
+    public static final class HallwayWithATurn extends ElementBase<TETile> {
+        public enum Shapes {TopLeft, TopRight, BottomLeft, BottomRight}
+
+        public HallwayWithATurn(int height, int width, int positionX, int positionY, Shapes shape) {
+            super(height, width, positionX, positionY);
+            for (int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+                    data[i][j] = Tileset.NOTHING;
+                }
+            }
+            switch (shape) {
+                case TopLeft -> {
+                    for (int j = 0; j < width; ++j) {
+                        data[0][j] = Tileset.WALL;
+                        data[1][j] = Tileset.FLOOR;
+                        data[2][j] = Tileset.WALL;
+                    }
+                    // TODO: add left and ensure the crossing point is not overridden.
+                }
+                // TODO: implement the remaining 3 cases.
+            }
+        }
+    }
+
     public static final class Door extends ElementBase<TETile> {
         private boolean locked = true;
         public Door(int positionX, int positionY) {
