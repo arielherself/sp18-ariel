@@ -342,12 +342,12 @@ public class World extends MirrorCompatible<TETile> {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
                 if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
-                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomRight;
+                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomLeft;
                     final var temp = y1_clone;
                     y1_clone = y_clone;
                     y_clone = temp;
                 } else {
-                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomLeft;
+                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomRight;
                 }
                 for (int i = x1; i <= x; ++i) {
                     if (!hasVerticalSpaceAround(i, y)) {
@@ -401,14 +401,14 @@ public class World extends MirrorCompatible<TETile> {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
                 if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
-                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomRight;
+                    shape = ElementGenerator.HallwayWithATurn.Shapes.TopLeft;
                     final var temp = y1_clone;
                     y1_clone = y_clone;
                     y_clone = temp;
                 } else {
-                    shape = ElementGenerator.HallwayWithATurn.Shapes.BottomLeft;
+                    shape = ElementGenerator.HallwayWithATurn.Shapes.TopRight;
                 }
-                for (int i = x1; i <= x; ++i) {
+                for (int i = x; i <= x1; ++i) {
                     if (!hasVerticalSpaceAround(i, y)) {
                         continue seekForCrossingPoint;
                     }
@@ -421,8 +421,8 @@ public class World extends MirrorCompatible<TETile> {
                 if (!hasSpaceAround(x, y)) {
                     continue;
                 }
-                result.add(new ElementGenerator.HallwayWithATurn(x - roomA.positionX - roomA.height + 2, y1_clone - y_clone + 1,
-                        roomA.positionX + roomA.height - 1, y1_clone, shape));
+                result.add(new ElementGenerator.HallwayWithATurn(roomA.positionX - x, y1_clone - y_clone + 1,
+                        x, y1_clone, shape));
             }
         }
 
