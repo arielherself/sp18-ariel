@@ -20,7 +20,7 @@ public class World extends MirrorCompatible<TETile> {
     public World(int height, int width) {
         this.height = height;
         this.width = width;
-        world = (TETile[][]) new Object[height][width];
+        world = new TETile[height][width];
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 world[i][j] = Tileset.NOTHING;
