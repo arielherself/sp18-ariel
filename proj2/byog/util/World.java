@@ -439,7 +439,7 @@ public class World extends MirrorCompatible<TETile> {
         return result;
     }
 
-    public ElementGenerator.Hallway generateHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    public ElementGenerator.Hallway buildHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
         LinkedList<ElementGenerator.Hallway> candidates = new LinkedList<>();
         try {
             candidates.add(tryToBuildHallwayDirectly(roomA, roomB));
