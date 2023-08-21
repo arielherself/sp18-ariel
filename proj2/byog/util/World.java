@@ -48,14 +48,14 @@ public class World extends MirrorCompatible<TETile> {
         }
     }
 
-    protected boolean hasHorizontalSpaceAround(int x, int y) {
+    protected boolean hasVerticalSpaceAround(int x, int y) {
         return !(x == 0 || x == height - 1) &&
                 world[x][y] == Tileset.NOTHING &&
                 world[x-1][y] == Tileset.NOTHING &&
                 world[x+1][y] == Tileset.NOTHING;
     }
 
-    protected boolean hasVerticalSpaceAround(int x, int y) {
+    protected boolean hasHorizontalSpaceAround(int x, int y) {
         return !(y == 0 || y == width - 1) &&
                 world[x][y] == Tileset.NOTHING &&
                 world[x][y-1] == Tileset.NOTHING &&
@@ -119,7 +119,6 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     public ElementGenerator.Room buildMergeableRoom() throws RuntimeException {
-        // TODO fix: overlapping
         if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
