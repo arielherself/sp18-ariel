@@ -220,8 +220,63 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     public ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
-        // TODO: implement it
-        return null;
+        // Keep the roomA at the top of the roomB.
+        if (roomA.positionX > roomB.positionX) {
+            ElementGenerator.Room temp = roomA;
+            roomA = roomB;
+            roomB = temp;
+        }
+
+        int start = -1, end = -1;
+        for (int i = roomA.positionY; i < roomA.positionY + roomA.width; ++i) {
+            if (i >= roomB.positionY && i <= roomB.positionY + roomB.width) {
+                if (start == -1) {
+                    start = i;
+                }
+            } else {
+                if (start != -1) {
+                    end = i;
+                    break;
+                }
+            }
+        }
+
+        boolean ableToBuild = false;
+        for (int y = start; y < end; ++y) {
+            boolean connectable = true;
+            for (int j = roomA.positionX + roomA.height; j < roomB.positionX; ++j) {
+                if (!hasVerticalSpaceAround(j, y)) {
+                    connectable = false;
+                    break;
+                }
+            }
+            if (connectable) {
+                ableToBuild = true;
+                break;
+            }
+        }
+        if (!ableToBuild) {
+            throw new RuntimeException("Unable to build a horizontalHallway");
+        }
+
+        Random random = new Random();
+        int y;
+        ElementGenerator.Hallway result;
+        boolean free;
+        do {
+            y = random.nextInt(start, end);
+            free = true;
+            for (int j = roomA.positionX + roomA.height; j < roomB.positionX; ++j) {
+                if (!hasVerticalSpaceAround(j, y)) {
+                    free = false;
+                    break;
+                }
+            }
+        } while (!free);
+
+        // Finally build the hallway after checking there's no obstacles
+        return new ElementGenerator.Hallway(roomB.positionX - roomA.positionX -roomA.height + 2, 3,
+                roomA.positionX + roomA.height - 1, y);
     }
 
     public ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
