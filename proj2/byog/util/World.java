@@ -323,6 +323,7 @@ public class World extends MirrorCompatible<TETile> {
          *                 |       | |------
          *                 y       y1 > y
          */
+
         if (roomA.positionY > roomB.positionY) {
             var temp = roomA;
             roomA = roomB;
@@ -336,8 +337,8 @@ public class World extends MirrorCompatible<TETile> {
         final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY);
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        outerLoop: for (int x = x1; x <= x2; ++x) {
-            for (int y = y1; y <= x2; ++y) {
+        for (int x = x1; x <= x2; ++x) {
+            seekForCrossingPoint: for (int y = y1; y <= x2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
                 if (y1_clone < y_clone) {
@@ -350,16 +351,16 @@ public class World extends MirrorCompatible<TETile> {
                 }
                 for (int i = x1; i <= x; ++i) {
                     if (!hasVerticalSpaceAround(i, y)) {
-                        continue outerLoop;
+                        continue seekForCrossingPoint;
                     }
                 }
                 for (int j = y_clone; j <= y1_clone; ++j) {
                     if (!hasHorizontalSpaceAround(x, y1)) {
-                        continue outerLoop;
+                        continue seekForCrossingPoint;
                     }
                 }
                 if (!hasSpaceAround(x, y)) {
-                    continue outerLoop;
+                    continue seekForCrossingPoint;
                 }
                 result.add(new ElementGenerator.HallwayWithATurn(x - roomA.positionX - roomA.height + 2, y1_clone - y_clone + 1,
                         roomA.positionX + roomA.height - 1, y1_clone, shape));
