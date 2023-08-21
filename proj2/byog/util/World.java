@@ -9,6 +9,7 @@ import java.util.Random;
 public class World extends MirrorCompatible<TETile> {
     private final TETile[][] world;
     private final LinkedList<ElementBase<TETile>> elements = new LinkedList<>();
+    private final LinkedList<ElementGenerator.Room> rooms = new LinkedList<>();
     private final int height, width;
 
     @Override
@@ -30,6 +31,9 @@ public class World extends MirrorCompatible<TETile> {
     public void cacheAndMerge(ElementBase<TETile> element) {
         assert !elements.contains(element);
         elements.add(element);
+        if (element instanceof ElementGenerator.Room roomElement) {
+            rooms.add(roomElement);
+        }
         for (int i = 0; i < element.height; ++i) {
            for (int j = 0; j < element.width; ++j) {
                if (element.data[i][j] != Tileset.NOTHING) {
