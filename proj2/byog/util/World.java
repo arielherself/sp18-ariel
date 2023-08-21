@@ -149,9 +149,11 @@ public class World extends MirrorCompatible<TETile> {
         for (int i = x1; i <= x2; ++i) {
             if (y - findLeftBar(i, y) < rightmostLeftBarDistance) {
                 y1 = findLeftBar(i, y);
+                rightmostLeftBarDistance = y - y1;
             }
             if (findRightBar(i, y) - y < leftmostRightBarDistance) {
                 y2 = findRightBar(i, y);
+                leftmostRightBarDistance = y2 - y;
             }
         }
         y1 = (y1 + 1 < y) ? random.nextInt(y1 + 1, y) : y - 1;
