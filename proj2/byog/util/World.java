@@ -104,7 +104,7 @@ public class World extends MirrorCompatible<TETile> {
         return -1;
     }
 
-    public ElementGenerator.Room generateMergeableRoom() throws RuntimeException {
+    public ElementGenerator.Room buildMergeableRoom() throws RuntimeException {
         if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
@@ -308,11 +308,11 @@ public class World extends MirrorCompatible<TETile> {
             }
         }
 
-        // TODO refactor: do not throw an exception
+        // TODO refactor: do not throw an exception & -> buildHallwayDirectly
         throw new RuntimeException("Unable to build a hallway directly");
     }
 
-    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
          *                 ...
@@ -370,7 +370,7 @@ public class World extends MirrorCompatible<TETile> {
         return result;
     }
 
-    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
          *                 y
@@ -382,7 +382,6 @@ public class World extends MirrorCompatible<TETile> {
          *                 ...
          */
 
-        // TODO: implement it
         if (roomA.positionX > roomB.positionX) {
             var temp = roomA;
             roomA = roomB;
@@ -429,13 +428,13 @@ public class World extends MirrorCompatible<TETile> {
         return result;
     }
 
-    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
         try {
-            result.addAll(generateHallwaysWithAnUpwardTurn(roomA, roomB));
+            result.addAll(buildHallwaysWithAnUpwardTurn(roomA, roomB));
         } catch (RuntimeException ignored) {}
         try {
-            result.addAll(generateHallwaysWithADownwardTurn(roomA, roomB));
+            result.addAll(buildHallwaysWithADownwardTurn(roomA, roomB));
         } catch (RuntimeException ignored) {}
         return result;
     }
@@ -446,7 +445,7 @@ public class World extends MirrorCompatible<TETile> {
             candidates.add(tryToBuildHallwayDirectly(roomA, roomB));
         } catch (RuntimeException ignored) {}
 
-        candidates.addAll(generateHallwaysWithATurn(roomA, roomB));
+        candidates.addAll(buildHallwaysWithATurn(roomA, roomB));
 
         Random random = new Random();
         return candidates.get(random.nextInt(0, candidates.size()));
