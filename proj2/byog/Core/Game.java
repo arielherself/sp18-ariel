@@ -28,7 +28,7 @@ public class Game {
         Random random = new Random();
 
         /* Place the rooms */
-        int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms);
+        int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms + 1);
         numberOfRooms = 0;
         while (numberOfRooms < expectedNumberOfRooms && !world.isNoSpaceLeftForRooms()) {
             world.cacheAndMerge(world.buildMergeableRoom());
@@ -37,7 +37,7 @@ public class Game {
 
         /* Place the hallways */
         Set<ElementGenerator.Room> connectedRooms = new HashSet<>();
-        int expectedNumberOfHallways = random.nextInt(0, maxNumberOfHallways);
+        int expectedNumberOfHallways = random.nextInt(0, maxNumberOfHallways + 1);
         final var rooms = world.getRooms();
         for (int i = 0; i < expectedNumberOfHallways; ++i) {
             var roomA = rooms[random.nextInt(0, rooms.length)];
