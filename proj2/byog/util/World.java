@@ -338,7 +338,7 @@ public class World extends MirrorCompatible<TETile> {
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
         for (int x = x1; x < x2; ++x) {
-            seekForCrossingPoint: for (int y = y1; y < x2; ++y) {
+            seekForCrossingPoint: for (int y = y1; y < y2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
                 if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
@@ -397,7 +397,7 @@ public class World extends MirrorCompatible<TETile> {
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
         for (int x = x1; x < x2; ++x) {
-            seekForCrossingPoint: for (int y = y1; y < x2; ++y) {
+            seekForCrossingPoint: for (int y = y1; y < y2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
                 if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
