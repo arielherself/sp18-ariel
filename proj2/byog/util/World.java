@@ -3,7 +3,6 @@ package byog.util;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-import javax.swing.text.Element;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -29,7 +28,11 @@ public class World extends MirrorCompatible<TETile> {
 
     public void merge(ElementBase<TETile> element) {
         for (int i = 0; i < element.height; ++i) {
-            System.arraycopy(element.data[i], 0, world[element.positionX + i], element.positionY, element.width);
+           for (int j = 0; j < element.width; ++j) {
+               if (element.data[i][j] != Tileset.NOTHING) {
+                   world[element.positionX + i][element.positionY + j] = element.data[i][j];
+               }
+           }
         }
     }
 
@@ -101,7 +104,7 @@ public class World extends MirrorCompatible<TETile> {
         return -1;
     }
 
-    public ElementGenerator.Room generateMergeableRoom() {
+    public ElementGenerator.Room generateMergeableRoom() throws RuntimeException {
         if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
@@ -159,7 +162,8 @@ public class World extends MirrorCompatible<TETile> {
         return new ElementGenerator.Door(wallPositionX.get(targetNo), wallPositionY.get(targetNo));
     }
 
-    public ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    public ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+            throws RuntimeException {
         // Keep the roomA at the left of the roomB.
         if (roomA.positionY > roomB.positionY) {
             ElementGenerator.Room temp = roomA;
@@ -219,7 +223,8 @@ public class World extends MirrorCompatible<TETile> {
                 x, roomA.positionY + roomA.width - 1);
     }
 
-    public ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    public ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+            throws RuntimeException {
         // Keep the roomA at the top of the roomB.
         if (roomA.positionX > roomB.positionX) {
             ElementGenerator.Room temp = roomA;
@@ -279,7 +284,8 @@ public class World extends MirrorCompatible<TETile> {
                 roomA.positionX + roomA.height - 1, y);
     }
 
-    public ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    public ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+            throws RuntimeException {
         for (int i = roomA.positionX; i < roomA.positionX + roomA.height; ++i) {
             if (i >= roomB.positionX && i <= roomB.positionX + roomB.height) {
                 try {
@@ -302,9 +308,98 @@ public class World extends MirrorCompatible<TETile> {
             }
         }
 
+        // TODO refactor: do not throw an exception
+        throw new RuntimeException("Unable to build a hallway directly");
+    }
+
+    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+            throws RuntimeException {
+        /*
+         *                 ...
+         *             |  roomA  |
+         *             |---------|
+         *       x1 ______ | _______ |------
+         *        x _______|________ | roomB ...
+         *                 |       | |------
+         *                 y       y1 > y
+         */
+        if (roomA.positionY > roomB.positionY) {
+            var temp = roomA;
+            roomA = roomB;
+            roomB = temp;
+        }
+
+        assert roomB.positionY > roomA.positionY + 2;
+        final int x1 = Math.max(roomA.positionX + roomA.height, roomB.positionX);
+        final int x2 = roomB.positionX + roomB.height;
+        final int y1 = roomA.positionY;
+        final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY);
+
+        LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
+        outerLoop: for (int x = x1; x <= x2; ++x) {
+            for (int y = y1; y <= x2; ++y) {
+                int y1_clone = y1, y_clone = y;
+                if (y1_clone < y_clone) {
+                    final var temp = y1_clone;
+                    y1_clone = y_clone;
+                    y_clone = temp;
+                }
+                for (int i = x1; i <= x; ++i) {
+                    if (!hasVerticalSpaceAround(i, y)) {
+                        continue outerLoop;
+                    }
+                }
+                for (int j = y_clone; j <= y1_clone; ++j) {
+                    if (!hasHorizontalSpaceAround(x, y1)) {
+                        continue outerLoop;
+                    }
+                }
+                if (!hasSpaceAround(x, y)) {
+                    continue outerLoop;
+                }
+                // TODO: create a ElementGenerator.HallwayWithATurn and add it to the LinkedList.
+            }
+        }
+
+        return result;
+    }
+
+    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+            throws RuntimeException {
+        /*
+         *                 y       y1
+         *                 |       | |------
+         *        x _______|________ | roomB ...
+         *       x1 ______ |         |------
+         *             |---------|
+         *             |  roomA  |
+         *                 ...
+         */
+
+        // TODO: implement it
         return null;
     }
 
+    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
+        try {
+            result.addAll(generateHallwaysWithAnUpwardTurn(roomA, roomB));
+        } catch (RuntimeException ignored) {}
+        try {
+            result.addAll(generateHallwaysWithADownwardTurn(roomA, roomB));
+        } catch (RuntimeException ignored) {}
+        return result;
+    }
+
     public ElementGenerator.Hallway generateHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        LinkedList<ElementGenerator.Hallway> candidates = new LinkedList<>();
+        try {
+            candidates.add(tryToBuildHallwayDirectly(roomA, roomB));
+        } catch (RuntimeException ignored) {}
+
+        candidates.addAll(generateHallwaysWithATurn(roomA, roomB));
+
+        Random random = new Random();
+        return candidates.get(random.nextInt(0, candidates.size()));
     }
 }
