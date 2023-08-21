@@ -2,12 +2,75 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.util.ElementGenerator;
+import byog.util.World;
+
+import java.util.*;
 
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+
+    private int numberOfRooms;
+    private World world = new World(HEIGHT, WIDTH);
+
+    public void render() {
+        ter.renderFrame(world.mirrored());
+    }
+
+    public void initializeWorld(int maxNumberOfRooms, int maxNumberOfHallways) {
+        Random random = new Random();
+
+        /* Place the rooms */
+        int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms);
+        numberOfRooms = 0;
+        while (numberOfRooms < expectedNumberOfRooms && !world.isNoSpaceLeftForRooms()) {
+            world.cacheAndMerge(world.buildMergeableRoom());
+        }
+
+        /* Place the hallways */
+        Set<ElementGenerator.Room> connectedRooms = new HashSet<>();
+        int expectedNumberOfHallways = random.nextInt(0, maxNumberOfHallways);
+        final var rooms = world.getRooms();
+        for (int i = 0; i < expectedNumberOfHallways; ++i) {
+            var roomA = rooms[random.nextInt(0, rooms.length)];
+            var roomB = rooms[random.nextInt(0, rooms.length)];
+            while (roomA == roomB) {
+                roomB = rooms[random.nextInt(0, rooms.length)];
+            }
+            var hallway = world.buildHallway(roomA, roomB);
+            if (hallway != null) {
+                try {
+                    world.cacheAndMerge(hallway);
+                    connectedRooms.add(roomA);
+                    connectedRooms.add(roomB);
+                } catch (AssertionError ignored) {}
+            }
+        }
+        for (var roomA : rooms) { // All rooms must be connected!
+            if (!connectedRooms.contains(roomA)) {
+                while (true) {
+                    var roomB = rooms[random.nextInt(0, rooms.length)];
+                    while (roomA == roomB) {
+                        roomB = rooms[random.nextInt(0, rooms.length)];
+                    }
+                    var hallway = world.buildHallway(roomA, roomB);
+                    if (hallway == null) {
+                        continue;
+                    }
+                    try {
+                        world.cacheAndMerge(hallway);
+                        break;
+                    } catch (AssertionError ignored) {}
+                }
+            }
+        }
+
+        /* Place the door */
+        world.buildLockedDoor();
+    }
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -33,6 +96,8 @@ public class Game {
         // drawn if the same inputs had been given to playWithKeyboard().
 
         TETile[][] finalWorldFrame = null;
+        // TODO add: game process
+        finalWorldFrame = world.mirrored();
         return finalWorldFrame;
     }
 }
