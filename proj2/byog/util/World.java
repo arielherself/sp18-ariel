@@ -275,7 +275,7 @@ public class World extends MirrorCompatible<TETile> {
             }
         }
         if (!ableToBuild) {
-            throw new RuntimeException("Unable to build a horizontalHallway");
+            throw new RuntimeException("Unable to build a verticalHallway");
         }
 
         Random random = new Random();
