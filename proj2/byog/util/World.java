@@ -51,19 +51,19 @@ public class World extends MirrorCompatible<TETile> {
         }
     }
 
-    public boolean hasHorizontalSpaceAround(int x, int y) {
+    protected boolean hasHorizontalSpaceAround(int x, int y) {
         return world[x][y] == Tileset.NOTHING &&
                 world[x-1][y] == Tileset.NOTHING &&
                 world[x+1][y] == Tileset.NOTHING;
     }
 
-    public boolean hasVerticalSpaceAround(int x, int y) {
+    protected boolean hasVerticalSpaceAround(int x, int y) {
         return world[x][y] == Tileset.NOTHING &&
                 world[x][y-1] == Tileset.NOTHING &&
                 world[x][y+1] == Tileset.NOTHING;
     }
 
-    public boolean hasSpaceAround(int x, int y) {
+    protected boolean hasSpaceAround(int x, int y) {
         return hasHorizontalSpaceAround(x, y) &&
                 hasVerticalSpaceAround(x, y) &&
                 world[x-1][y-1] == Tileset.NOTHING &&
@@ -83,7 +83,7 @@ public class World extends MirrorCompatible<TETile> {
         return true;
     }
 
-    private int findLeftBar(int x, int y) {
+    protected int findLeftBar(int x, int y) {
         for (int j = y - 2; j >= 0; --j) {
             if (world[x][j] != Tileset.NOTHING || !hasVerticalSpaceAround(x, j)) {
                 return j;
@@ -92,7 +92,7 @@ public class World extends MirrorCompatible<TETile> {
         return -1;
     }
 
-    private int findRightBar(int x, int y) {
+    protected int findRightBar(int x, int y) {
         for (int j = y + 2; j < width; ++j) {
             if (world[x][j] != Tileset.NOTHING || !hasVerticalSpaceAround(x, j)) {
                 return j;
@@ -101,7 +101,7 @@ public class World extends MirrorCompatible<TETile> {
         return width;
     }
 
-    private int findTopBar(int x, int y) {
+    protected int findTopBar(int x, int y) {
         for (int i = x - 2; i >= 0; --i) {
             if (world[i][y] != Tileset.NOTHING || !hasHorizontalSpaceAround(i, y)) {
                 return i;
@@ -110,7 +110,7 @@ public class World extends MirrorCompatible<TETile> {
         return -1;
     }
 
-    private int findBottomBar(int x, int y) {
+    protected int findBottomBar(int x, int y) {
         for (int i = x + 2; i < height; ++i) {
             if (world[i][y] != Tileset.NOTHING || !hasHorizontalSpaceAround(i, y)) {
                 return i;
@@ -177,7 +177,7 @@ public class World extends MirrorCompatible<TETile> {
         return new ElementGenerator.Door(wallPositionX.get(targetNo), wallPositionY.get(targetNo));
     }
 
-    public ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    protected ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         // Keep the roomA at the left of the roomB.
         if (roomA.positionY > roomB.positionY) {
@@ -238,7 +238,7 @@ public class World extends MirrorCompatible<TETile> {
                 x, roomA.positionY + roomA.width - 1);
     }
 
-    public ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    protected ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         // Keep the roomA at the top of the roomB.
         if (roomA.positionX > roomB.positionX) {
@@ -299,7 +299,7 @@ public class World extends MirrorCompatible<TETile> {
                 roomA.positionX + roomA.height - 1, y);
     }
 
-    public ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    protected ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         for (int i = roomA.positionX; i < roomA.positionX + roomA.height; ++i) {
             if (i >= roomB.positionX && i <= roomB.positionX + roomB.height) {
@@ -327,7 +327,7 @@ public class World extends MirrorCompatible<TETile> {
         throw new RuntimeException("Unable to build a hallway directly");
     }
 
-    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    protected LinkedList<ElementGenerator.Hallway> buildHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
          *                 ...
@@ -385,7 +385,7 @@ public class World extends MirrorCompatible<TETile> {
         return result;
     }
 
-    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    protected LinkedList<ElementGenerator.Hallway> buildHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
          *                 y
@@ -443,7 +443,7 @@ public class World extends MirrorCompatible<TETile> {
         return result;
     }
 
-    public LinkedList<ElementGenerator.Hallway> buildHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+    protected LinkedList<ElementGenerator.Hallway> buildHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
         try {
             result.addAll(buildHallwaysWithAnUpwardTurn(roomA, roomB));
