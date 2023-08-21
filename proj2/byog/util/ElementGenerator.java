@@ -61,14 +61,61 @@ public final class ElementGenerator {
             }
             switch (shape) {
                 case TopLeft -> {
-                    for (int j = 0; j < width; ++j) {
-                        data[0][j] = Tileset.WALL;
-                        data[1][j] = Tileset.FLOOR;
-                        data[2][j] = Tileset.WALL;
-                    }
-                    // TODO: add left and ensure the crossing point is not overridden.
+                    addTop();
+                    addLeft();
+                    data[1][2] = Tileset.FLOOR;
+                    data[2][1] = Tileset.FLOOR;
                 }
-                // TODO: implement the remaining 3 cases.
+                case TopRight -> {
+                    addTop();
+                    addRight();
+                    data[1][width - 3] = Tileset.FLOOR;
+                    data[2][width - 2] = Tileset.FLOOR;
+                }
+                case BottomLeft -> {
+                    addBottom();
+                    addLeft();
+                    data[height - 3][1] = Tileset.FLOOR;
+                    data[height - 2][2] = Tileset.FLOOR;
+                }
+                case BottomRight -> {
+                    addBottom();
+                    addRight();
+                    data[height - 2][width - 3] = Tileset.FLOOR;
+                    data[height - 3][width - 2] = Tileset.FLOOR;
+                }
+            }
+        }
+
+        private void addTop() {
+            for (int j = 0; j < width; ++j) {
+                data[0][j] = Tileset.WALL;
+                data[1][j] = Tileset.FLOOR;
+                data[2][j] = Tileset.WALL;
+            }
+        }
+
+        private void addLeft() {
+            for (int i = 0; i < height; ++i) {
+                data[i][0] = Tileset.WALL;
+                data[i][1] = Tileset.FLOOR;
+                data[i][2] = Tileset.WALL;
+            }
+        }
+
+        private void addRight() {
+            for (int i = 0; i < height; ++i) {
+                data[i][width - 1] = Tileset.WALL;
+                data[i][width - 2] = Tileset.FLOOR;
+                data[i][width - 3] = Tileset.WALL;
+            }
+        }
+
+        private void addBottom() {
+            for (int j = 0; j < width; ++j) {
+                data[height - 1][j] = Tileset.WALL;
+                data[height - 2][j] = Tileset.FLOOR;
+                data[height - 3][j] = Tileset.WALL;
             }
         }
     }
