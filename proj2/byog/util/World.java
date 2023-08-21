@@ -119,7 +119,7 @@ public class World extends MirrorCompatible<TETile> {
                 return i;
             }
         }
-        return -1;
+        return height;
     }
 
     public ElementGenerator.Room buildMergeableRoom() throws RuntimeException {
@@ -146,8 +146,8 @@ public class World extends MirrorCompatible<TETile> {
         int upperBound = findTopBar(x, y);
         int lowerBound = findBottomBar(x, y);
 
-        final int x1 = random.nextInt(upperBound + 1, x);
-        final int x2 = random.nextInt(x + 1, lowerBound);
+        final int x1 = (upperBound + 1 < x) ? random.nextInt(upperBound + 1, x) : x;
+        final int x2 = (x + 1 < lowerBound) ? random.nextInt(x + 1, lowerBound) : lowerBound;
 
         int rightmostLeftBarDistance = width + 1, leftmostRightBarDistance = width + 1, y1 = y, y2 = y;
         for (int i = x1; i <= x2; ++i) {
@@ -160,7 +160,7 @@ public class World extends MirrorCompatible<TETile> {
         }
         y1 = (y1 < y - 1) ? random.nextInt(y1, y - 1) : y - 1;
         y2 = (y + 2 < y2 + 1) ? random.nextInt(y + 2, y2 + 1) : y + 2;
-        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
+        return new ElementGenerator.Room(x2 - x1, y2 - y1, x1, y1);
     }
 
 
