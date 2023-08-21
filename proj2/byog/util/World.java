@@ -119,6 +119,7 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     public ElementGenerator.Room buildMergeableRoom() throws RuntimeException {
+        // TODO fix: overlapping
         if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
@@ -139,24 +140,24 @@ public class World extends MirrorCompatible<TETile> {
          *  v              y1          y2
          */
 
-        int upperBound = findTopBar(x, y);
-        int lowerBound = findBottomBar(x, y);
+        int upperBound = findTopBar(x, y); // excluded
+        int lowerBound = findBottomBar(x, y); // excluded
 
         final int x1 = (upperBound + 1 < x) ? random.nextInt(upperBound + 1, x) : x;
-        final int x2 = (x + 1 < lowerBound) ? random.nextInt(x + 1, lowerBound) : lowerBound;
+        final int x2 = (x + 1 < lowerBound - 1) ? random.nextInt(x + 1, lowerBound) : lowerBound - 1;
 
         int rightmostLeftBarDistance = width + 1, leftmostRightBarDistance = width + 1, y1 = y, y2 = y;
         for (int i = x1; i <= x2; ++i) {
-            if (x - findLeftBar(x, i) < rightmostLeftBarDistance) {
-                y1 = findLeftBar(x, i);
+            if (y - findLeftBar(i, y) < rightmostLeftBarDistance) {
+                y1 = findLeftBar(i, y);
             }
-            if (findRightBar(x, i) - x < leftmostRightBarDistance) {
-                y2 = findRightBar(x, i);
+            if (findRightBar(i, y) - y < leftmostRightBarDistance) {
+                y2 = findRightBar(i, y);
             }
         }
-        y1 = (y1 < y - 1) ? random.nextInt(y1, y - 1) : y - 1;
-        y2 = (y + 2 < y2 + 1) ? random.nextInt(y + 2, y2 + 1) : y + 2;
-        return new ElementGenerator.Room(x2 - x1, y2 - y1, x1, y1);
+        y1 = (y1 + 1 < y) ? random.nextInt(y1 + 1, y) : y - 1;
+        y2 = (y + 1 < y2) ? random.nextInt(y + 1, y2) : y + 1;
+        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
     }
 
 
