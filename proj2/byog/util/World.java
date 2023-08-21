@@ -450,7 +450,11 @@ public class World extends MirrorCompatible<TETile> {
 
         candidates.addAll(buildHallwaysWithATurn(roomA, roomB));
 
-        Random random = new Random();
-        return candidates.get(random.nextInt(0, candidates.size()));
+        if (candidates.isEmpty()) {
+            return null;
+        } else {
+            Random random = new Random();
+            return candidates.get(random.nextInt(0, candidates.size()));
+        }
     }
 }
