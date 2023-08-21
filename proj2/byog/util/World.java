@@ -331,17 +331,17 @@ public class World extends MirrorCompatible<TETile> {
         }
 
         assert roomB.positionY > roomA.positionY + 2;
-        final int x1 = Math.max(roomA.positionX + roomA.height, roomB.positionX);
+        final int x1 = Math.max(roomA.positionX + roomA.height, roomB.positionX); // excluded
         final int x2 = roomB.positionX + roomB.height;
         final int y1 = roomA.positionY;
-        final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY);
+        final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY); // excluded
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        for (int x = x1; x <= x2; ++x) {
-            seekForCrossingPoint: for (int y = y1; y <= x2; ++y) {
+        for (int x = x1; x < x2; ++x) {
+            seekForCrossingPoint: for (int y = y1; y < x2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
-                if (y1_clone < y_clone) {
+                if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
                     shape = ElementGenerator.HallwayWithATurn.Shapes.BottomRight;
                     final var temp = y1_clone;
                     y1_clone = y_clone;
@@ -373,34 +373,34 @@ public class World extends MirrorCompatible<TETile> {
     public LinkedList<ElementGenerator.Hallway> generateHallwaysWithAnUpwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
-         *                 y       y1
-         *                 |       | |------
+         *                 y
+         *                 |         |------
          *        x _______|________ | roomB ...
-         *       x1 ______ |         |------
+         *   x1 > x ______ | ______  |------
          *             |---------|
          *             |  roomA  |
          *                 ...
          */
 
         // TODO: implement it
-        if (roomA.positionY > roomB.positionY) {
+        if (roomA.positionX > roomB.positionX) {
             var temp = roomA;
             roomA = roomB;
             roomB = temp;
         }
 
-        assert roomB.positionY > roomA.positionY + 2;
-        final int x1 = Math.max(roomA.positionX + roomA.height, roomB.positionX);
-        final int x2 = roomB.positionX + roomB.height;
+        assert roomB.positionX > roomA.positionX + 2;
+        final int x1 = Math.min(roomA.positionX, roomB.positionX + roomB.height) - 1;
+        final int x2 = roomB.positionX; // x2 < x1
         final int y1 = roomA.positionY;
-        final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY);
+        final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY); // excluded
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        for (int x = x1; x <= x2; ++x) {
-            seekForCrossingPoint: for (int y = y1; y <= x2; ++y) {
+        for (int x = x1; x < x2; ++x) {
+            seekForCrossingPoint: for (int y = y1; y < x2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
-                if (y1_clone < y_clone) {
+                if (y1_clone < y_clone) { // Keep roomB on the right side of roomA
                     shape = ElementGenerator.HallwayWithATurn.Shapes.BottomRight;
                     final var temp = y1_clone;
                     y1_clone = y_clone;
