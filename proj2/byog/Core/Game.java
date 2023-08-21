@@ -101,7 +101,7 @@ public class Game {
 
         TETile[][] finalWorldFrame = null;
         // TODO add: game process
-        finalWorldFrame = world.mirrored();
+        finalWorldFrame = world.mirrored(TETile.class);
         return finalWorldFrame;
     }
 }
