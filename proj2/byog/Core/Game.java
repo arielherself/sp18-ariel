@@ -32,6 +32,7 @@ public class Game {
         numberOfRooms = 0;
         while (numberOfRooms < expectedNumberOfRooms && !world.isNoSpaceLeftForRooms()) {
             world.cacheAndMerge(world.buildMergeableRoom());
+            ++numberOfRooms;
         }
 
         /* Place the hallways */
