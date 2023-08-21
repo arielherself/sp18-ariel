@@ -29,12 +29,8 @@ public class World extends MirrorCompatible<TETile> {
         }
     }
 
-    public ElementBase<TETile>[] getElements() {
-        return (ElementBase<TETile>[]) elements.toArray();
-    }
-
     public ElementGenerator.Room[] getRooms() {
-        return (ElementGenerator.Room[]) rooms.toArray();
+        return rooms.toArray(new ElementGenerator.Room[rooms.size()]);
     }
 
     public void cacheAndMerge(ElementBase<TETile> element) {
