@@ -6,7 +6,7 @@ import byog.TileEngine.Tileset;
 public final class ElementGenerator {
     public static final class Room extends ElementBase<TETile> {
         public Room(int height, int width, int positionX, int positionY) {
-            super(height, width, positionX, positionY);
+            super(TETile.class, height, width, positionX, positionY);
             assert height >= 3 && width >= 3;
 
             // Build walls
@@ -30,7 +30,7 @@ public final class ElementGenerator {
 
     public static class Hallway extends ElementBase<TETile> {
         public Hallway(int height, int width, int positionX, int positionY) {
-            super(height, width, positionX, positionY);
+            super(TETile.class, height, width, positionX, positionY);
             assert height == 3 || width == 3;
 
             if (height == 3) {
@@ -123,7 +123,7 @@ public final class ElementGenerator {
     public static final class Door extends ElementBase<TETile> {
         private boolean locked = true;
         public Door(int positionX, int positionY) {
-            super(1, 1, positionX, positionY);
+            super(TETile.class, 1, 1, positionX, positionY);
             data[0][0] = Tileset.LOCKED_DOOR;
         }
 

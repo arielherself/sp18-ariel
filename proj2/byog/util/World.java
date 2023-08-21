@@ -3,6 +3,7 @@ package byog.util;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.lang.reflect.Array;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public class World extends MirrorCompatible<TETile> {
     public World(int height, int width) {
         this.height = height;
         this.width = width;
-        world = new TETile[height][width];
+        world = (TETile[][]) Array.newInstance(TETile.class, height, width);
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 world[i][j] = Tileset.NOTHING;
@@ -52,13 +53,15 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     protected boolean hasHorizontalSpaceAround(int x, int y) {
-        return world[x][y] == Tileset.NOTHING &&
+        return !(x == 0 || x == height - 1) &&
+                world[x][y] == Tileset.NOTHING &&
                 world[x-1][y] == Tileset.NOTHING &&
                 world[x+1][y] == Tileset.NOTHING;
     }
 
     protected boolean hasVerticalSpaceAround(int x, int y) {
-        return world[x][y] == Tileset.NOTHING &&
+        return !(y == 0 || y == width - 1) &&
+                world[x][y] == Tileset.NOTHING &&
                 world[x][y-1] == Tileset.NOTHING &&
                 world[x][y+1] == Tileset.NOTHING;
     }
@@ -155,8 +158,8 @@ public class World extends MirrorCompatible<TETile> {
                 y2 = findRightBar(x, i);
             }
         }
-        y1 = random.nextInt(y1, y - 1);
-        y2 = random.nextInt(y + 2, y2 + 1);
+        y1 = (y1 < y - 1) ? random.nextInt(y1, y - 1) : y - 1;
+        y2 = (y + 2 < y2 + 1) ? random.nextInt(y + 2, y2 + 1) : y + 2;
         return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
     }
 
