@@ -312,7 +312,7 @@ public class World extends MirrorCompatible<TETile> {
         throw new RuntimeException("Unable to build a hallway directly");
     }
 
-    public LinkedList<ElementGenerator.HallwayWithATurn> generateHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
+    public LinkedList<ElementGenerator.Hallway> generateHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
         /*
          *                 ...
@@ -335,7 +335,7 @@ public class World extends MirrorCompatible<TETile> {
         final int y1 = roomA.positionY;
         final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY);
 
-        LinkedList<ElementGenerator.HallwayWithATurn> result = new LinkedList<>();
+        LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
         outerLoop: for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= x2; ++y) {
                 int y1_clone = y1, y_clone = y;

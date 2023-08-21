@@ -28,7 +28,7 @@ public final class ElementGenerator {
         }
     }
 
-    public static final class Hallway extends ElementBase<TETile> {
+    public static class Hallway extends ElementBase<TETile> {
         public Hallway(int height, int width, int positionX, int positionY) {
             super(height, width, positionX, positionY);
             assert height == 3 || width == 3;
@@ -49,7 +49,7 @@ public final class ElementGenerator {
         }
     }
 
-    public static final class HallwayWithATurn extends ElementBase<TETile> {
+    public static final class HallwayWithATurn extends Hallway {
         public enum Shapes {TopLeft, TopRight, BottomLeft, BottomRight}
 
         public HallwayWithATurn(int height, int width, int positionX, int positionY, Shapes shape) {
