@@ -161,7 +161,7 @@ public class World extends MirrorCompatible<TETile> {
     }
 
 
-    public ElementGenerator.Door generateLockedDoor() {
+    public ElementGenerator.Door buildLockedDoor() {
         LinkedList<Integer> wallPositionX = new LinkedList<>();
         LinkedList<Integer> wallPositionY = new LinkedList<>();
         for (int i = 0; i < height; ++i) {
