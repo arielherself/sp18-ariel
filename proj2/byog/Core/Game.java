@@ -16,8 +16,12 @@ public class Game {
     private int numberOfRooms;
     private World world = new World(HEIGHT, WIDTH);
 
+    public Game() {
+        ter.initialize(WIDTH, HEIGHT);
+    }
+
     public void render() {
-        ter.renderFrame(world.mirrored());
+        ter.renderFrame(world.mirrored(TETile.class));
     }
 
     public void initializeWorld(int maxNumberOfRooms, int maxNumberOfHallways) {
