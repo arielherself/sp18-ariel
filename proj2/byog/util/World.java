@@ -28,6 +28,14 @@ public class World extends MirrorCompatible<TETile> {
         }
     }
 
+    public ElementBase<TETile>[] getElements() {
+        return (ElementBase<TETile>[]) elements.toArray();
+    }
+
+    public ElementGenerator.Room[] getRooms() {
+        return (ElementGenerator.Room[]) rooms.toArray();
+    }
+
     public void cacheAndMerge(ElementBase<TETile> element) {
         assert !elements.contains(element);
         elements.add(element);
