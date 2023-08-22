@@ -25,6 +25,7 @@ public class World2 extends MirrorCompatible<TETile> {
         public final ElementGenerator.Room room;
 
         public ExpansionResult(ElementGenerator.Room room, ElementGenerator.Hallway... hallways) {
+            // TODO refactor: remove support for multiple hallways
             this.room = room;
             this.hallways.addAll(Arrays.asList(hallways));
         }
