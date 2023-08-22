@@ -28,6 +28,7 @@ public class Game {
         Random random = new Random();
 
         /* Place the rooms */
+        // TODO: add limitation to the size of the rooms
         int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms + 1);
         numberOfRooms = 0;
         while (numberOfRooms < expectedNumberOfRooms && !world.isNoSpaceLeftForRooms()) {
