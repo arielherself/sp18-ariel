@@ -65,24 +65,28 @@ public final class ElementGenerator {
                     addLeft();
                     data[1][2] = Tileset.FLOOR;
                     data[2][1] = Tileset.FLOOR;
+                    data[0][1] = Tileset.WALL;
                 }
                 case TopRight -> {
                     addTop();
                     addRight();
                     data[1][width - 3] = Tileset.FLOOR;
                     data[2][width - 2] = Tileset.FLOOR;
+                    data[0][width - 2] = Tileset.WALL;
                 }
                 case BottomLeft -> {
                     addBottom();
                     addLeft();
                     data[height - 3][1] = Tileset.FLOOR;
                     data[height - 2][2] = Tileset.FLOOR;
+                    data[height - 1][1] = Tileset.WALL;
                 }
                 case BottomRight -> {
                     addBottom();
                     addRight();
                     data[height - 2][width - 3] = Tileset.FLOOR;
                     data[height - 3][width - 2] = Tileset.FLOOR;
+                    data[height - 1][width - 2] = Tileset.WALL;
                 }
             }
         }
