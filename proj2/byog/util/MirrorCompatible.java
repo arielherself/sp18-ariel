@@ -10,12 +10,18 @@ public abstract class MirrorCompatible<T> {
         }
         final int m = target.length;
         final int n = target[0].length;
+        for (int i = 0; i < m / 2; ++i) {
+            var temp = target[i];
+            target[i] = target[m - i - 1];
+            target[m - i - 1] = temp;
+        }
         var result = (T[][]) Array.newInstance(c, n, m);
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 result[j][i] = target[i][j];
             }
         }
+
         return result;
     }
 
