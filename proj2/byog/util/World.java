@@ -180,6 +180,10 @@ public class World extends MirrorCompatible<TETile> {
 
     protected ElementGenerator.Hallway buildHorizontalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
+        if (roomA.positionX >= roomB.positionX + roomB.height || roomB.positionX >= roomA.positionX + roomA.height) {
+            throw new RuntimeException();
+        }
+
         // Keep the roomA at the left of the roomB.
         if (roomA.positionY > roomB.positionY) {
             ElementGenerator.Room temp = roomA;
@@ -228,6 +232,10 @@ public class World extends MirrorCompatible<TETile> {
 
     protected ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
             throws RuntimeException {
+        if (roomA.positionY >= roomB.positionY + roomB.width || roomB.positionY >= roomA.positionY + roomA.width) {
+            throw new RuntimeException();
+        }
+
         // Keep the roomA at the top of the roomB.
         if (roomA.positionX > roomB.positionX) {
             ElementGenerator.Room temp = roomA;
