@@ -215,6 +215,8 @@ public class World2 extends MirrorCompatible<TETile> {
             case Up -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x - expandLength, c.y - 1);
             case Down -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x, c.y - 1);
         };
+        System.out.println(o);
+        System.out.printf("c=(%d, %d), expandLength = %d\n\n", c.x, c.y, expandLength);
 
         final boolean canTurn = switch (o) {
             case Up, Down -> maxExpandLength(nc, Orientations.Left) > 2 || maxExpandLength(nc, Orientations.Right) > 2;
