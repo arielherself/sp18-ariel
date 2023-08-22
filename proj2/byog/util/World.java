@@ -337,7 +337,7 @@ public class World extends MirrorCompatible<TETile> {
         final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY); // excluded
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        for (int x = x1; x < x2; ++x) {
+        for (int x = x1 + 1; x < x2; ++x) {
             seekForCrossingPoint: for (int y = y1; y < y2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
@@ -389,13 +389,13 @@ public class World extends MirrorCompatible<TETile> {
         }
 
         assert roomB.positionX > roomA.positionX + 2;
-        final int x1 = Math.min(roomA.positionX, roomB.positionX + roomB.height) - 1;
+        final int x1 = Math.min(roomA.positionX, roomB.positionX + roomB.height) - 1; // excluded
         final int x2 = roomB.positionX; // x2 < x1
         final int y1 = roomA.positionY;
         final int y2 = Math.min(roomA.positionY + roomA.width, roomB.positionY); // excluded
 
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        for (int x = x1; x < x2; ++x) {
+        for (int x = x2; x < x1; ++x) {
             seekForCrossingPoint: for (int y = y1; y < y2; ++y) {
                 int y1_clone = y1, y_clone = y;
                 ElementGenerator.HallwayWithATurn.Shapes shape;
