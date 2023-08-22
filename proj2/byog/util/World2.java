@@ -136,7 +136,6 @@ public class World2 extends MirrorCompatible<TETile> {
         int s = 0;
         Coordinate nc = Coordinate.copyOf(c);
         while (expandableCore(nc, o)) {
-            System.out.print(1);
             nc.setX(switch (o) {
                 case Up -> nc.x - 1;
                 case Down -> nc.x + 1;
@@ -222,8 +221,7 @@ public class World2 extends MirrorCompatible<TETile> {
             case Left, Right -> maxExpandLength(nc, Orientations.Up) > 2 || maxExpandLength(nc, Orientations.Down) > 2;
         } && expandLength >= 3;
         if ((!noTurn) && canTurn) {
-//            final boolean turn = random.nextBoolean();
-            /* debug */ boolean turn = true;
+            final boolean turn = random.nextBoolean();
             if (turn) {
 
                 Orientations nextO;
@@ -235,7 +233,6 @@ public class World2 extends MirrorCompatible<TETile> {
                         case Up, Down -> Orientations.Right;
                         case Left, Right -> Orientations.Down;
                     };
-                    System.out.print(3);
                 } while (!expandable(nc, nextO));
 
                 var turnResult = expand(nc, nextO, maximumLength, true);
@@ -399,7 +396,6 @@ public class World2 extends MirrorCompatible<TETile> {
         final int choice = random.nextInt(rooms.size());
         while (true) {
             try {
-                System.out.print(2);
                 return expand(rooms.get(choice), maximumLength);
             } catch (RoomNotExpandableException ignored) {}
         }
@@ -427,11 +423,10 @@ public class World2 extends MirrorCompatible<TETile> {
     }
 
     public ElementGenerator.Room buildFirstRoom(int areaLimit) {
-//        final int x1 = random.nextInt(height - 3);
-//        final int x2 = random.nextInt(x1 + 2, height - 1);
-//        final int y1 = random.nextInt(width - 3);
-//        final int y2 = random.nextInt(y1 + 2, width - 1);
-//        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
-        return new ElementGenerator.Room(10, 20, 1, 1);
+        final int x1 = random.nextInt(height - 3);
+        final int x2 = random.nextInt(x1 + 2, Math.min(areaLimit, height - 1));
+        final int y1 = random.nextInt(width - 3);
+        final int y2 = random.nextInt((x2 - x1 == 2) ? y1 + 3 : y1 + 2, Math.min(y1 + 2 + areaLimit / (x2 - x1), width - 1));
+        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
     }
 }
