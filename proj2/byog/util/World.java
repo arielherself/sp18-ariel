@@ -189,7 +189,7 @@ public class World extends MirrorCompatible<TETile> {
 
         int start = -1, end = -1;
         for (int i = roomA.positionX + 1; i < roomA.positionX + roomA.height - 1; ++i) {
-            if (i >= roomB.positionX + 1 && i < roomB.positionX + roomB.height - 1) {
+            if ((i >= (roomB.positionX + 1)) && (i < (roomB.positionX + roomB.height - 1))) {
                 if (start == -1) {
                     start = i;
                 }
@@ -204,7 +204,7 @@ public class World extends MirrorCompatible<TETile> {
             end = roomA.positionX + roomA.height - 1;
         }
 
-        boolean ableToBuild = false;
+        LinkedList<ElementGenerator.Hallway> candidates = new LinkedList<>();
         for (int x = start; x < end; ++x) {
             boolean connectable = true;
             for (int i = roomA.positionY + roomA.width; i < roomB.positionY; ++i) {
@@ -214,31 +214,20 @@ public class World extends MirrorCompatible<TETile> {
                 }
             }
             if (connectable) {
-                ableToBuild = true;
-                break;
+                System.out.printf("roomA: %d %d %d %d\nroomB: %d, %d, %d, %d\nx: %d\n\n", roomA.positionX, roomA.positionY,
+                        roomA.positionX + roomA.height - 1, roomA.positionY + roomA.width - 1, roomB.positionX, roomB.positionY,
+                        roomB.positionX + roomB.height - 1, roomB.positionY + roomB.width - 1, x
+                        );
+                candidates.add(new ElementGenerator.Hallway(3, roomB.positionY - roomA.positionY - roomA.width + 2,
+                        x - 1, roomA.positionY + roomA.width - 1));
             }
         }
-        if (!ableToBuild) {
+        if (candidates.isEmpty()) {
             throw new RuntimeException("Unable to build a horizontalHallway");
         }
 
         Random random = new Random();
-        int x;
-        boolean free;
-        do {
-            x = random.nextInt(start, end);
-            free = true;
-            for (int i = roomA.positionY + roomA.width; i < roomB.positionY; ++i) {
-                if (!hasVerticalSpaceAround(x, i)) {
-                    free = false;
-                    break;
-                }
-            }
-        } while (!free);
-
-        // Finally build the hallway after checking there's no obstacles
-        return new ElementGenerator.Hallway(3, roomB.positionY - roomA.positionY - roomA.width + 2,
-                x - 1, roomA.positionY + roomA.width - 1);
+        return candidates.get(random.nextInt(candidates.size()));
     }
 
     protected ElementGenerator.Hallway buildVerticalHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
@@ -267,41 +256,26 @@ public class World extends MirrorCompatible<TETile> {
             end = roomA.positionY + roomA.width - 1;
         }
 
-        boolean ableToBuild = false;
+        LinkedList<ElementGenerator.Hallway> candidates = new LinkedList<>();
         for (int y = start; y < end; ++y) {
             boolean connectable = true;
             for (int j = roomA.positionX + roomA.height; j < roomB.positionX; ++j) {
-                if (!hasVerticalSpaceAround(j, y)) {
+                if (!hasHorizontalSpaceAround(j, y)) {
                     connectable = false;
                     break;
                 }
             }
             if (connectable) {
-                ableToBuild = true;
-                break;
+                candidates.add(new ElementGenerator.Hallway(roomB.positionX - roomA.positionX -roomA.height + 2, 3,
+                        roomA.positionX + roomA.height - 1, y - 1));
             }
         }
-        if (!ableToBuild) {
+        if (candidates.isEmpty()) {
             throw new RuntimeException("Unable to build a verticalHallway");
+        } else {
+            Random random = new Random();
+            return candidates.get(random.nextInt(candidates.size()));
         }
-
-        Random random = new Random();
-        int y;
-        boolean free;
-        do {
-            y = random.nextInt(start, end);
-            free = true;
-            for (int j = roomA.positionX + roomA.height; j < roomB.positionX; ++j) {
-                if (!hasVerticalSpaceAround(j, y)) {
-                    free = false;
-                    break;
-                }
-            }
-        } while (!free);
-
-        // Finally build the hallway after checking there's no obstacles
-        return new ElementGenerator.Hallway(roomB.positionX - roomA.positionX -roomA.height + 2, 3,
-                roomA.positionX + roomA.height - 1, y - 1);
     }
 
     protected LinkedList<ElementGenerator.Hallway> buildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
