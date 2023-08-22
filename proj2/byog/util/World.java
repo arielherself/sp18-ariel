@@ -300,32 +300,16 @@ public class World extends MirrorCompatible<TETile> {
                 roomA.positionX + roomA.height - 1, y);
     }
 
-    protected ElementGenerator.Hallway tryToBuildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
-            throws RuntimeException {
-        for (int i = roomA.positionX; i < roomA.positionX + roomA.height; ++i) {
-            if (i >= roomB.positionX && i <= roomB.positionX + roomB.height) {
-                try {
-                    return buildHorizontalHallway(roomA, roomB);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-        }
+    protected LinkedList<ElementGenerator.Hallway> buildHallwayDirectly(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
+        LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
+        try {
+            result.add(buildHorizontalHallway(roomA, roomB));
+        } catch (RuntimeException ignored) {}
+        try {
+            result.add(buildVerticalHallway(roomA, roomB));
+        } catch (RuntimeException ignored) {}
 
-        for (int j = roomA.positionY; j < roomA.positionY + roomA.width; ++j) {
-            if (j >= roomB.positionY && j <= roomB.positionY + roomB.width) {
-                try {
-                    return buildVerticalHallway(roomA, roomB);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-        }
-
-        // TODO refactor: do not throw an exception & -> buildHallwayDirectly
-        throw new RuntimeException("Unable to build a hallway directly");
+        return result;
     }
 
     protected LinkedList<ElementGenerator.Hallway> buildHallwaysWithADownwardTurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB)
@@ -458,7 +442,7 @@ public class World extends MirrorCompatible<TETile> {
     public ElementGenerator.Hallway buildHallway(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
         LinkedList<ElementGenerator.Hallway> candidates = new LinkedList<>();
         try {
-            candidates.add(tryToBuildHallwayDirectly(roomA, roomB));
+            candidates.addAll(buildHallwayDirectly(roomA, roomB));
         } catch (RuntimeException ignored) {}
 
         candidates.addAll(buildHallwaysWithATurn(roomA, roomB));
