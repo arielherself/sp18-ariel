@@ -31,7 +31,7 @@ public final class ElementGenerator {
     public static class Hallway extends ElementBase<TETile> {
         public Hallway(int height, int width, int positionX, int positionY) {
             super(TETile.class, height, width, positionX, positionY);
-            assert height == 3 || width == 3;
+            assert (height == 3 || width == 3) && height != width;
 
             if (height == 3) {
                 for (int j = 0; j < width; ++j) {
@@ -45,6 +45,30 @@ public final class ElementGenerator {
                     data[i][1] = Tileset.FLOOR;
                     data[i][2] = Tileset.WALL;
                 }
+            }
+        }
+    }
+
+    public static class HorizontalHallway extends Hallway {
+        public HorizontalHallway(int height, int width, int positionX, int positionY) {
+            super(height, width, positionX, positionY);
+            assert height == 3;
+            for (int j = 0; j < width; ++j) {
+                data[0][j] = Tileset.WALL;
+                data[1][j] = Tileset.FLOOR;
+                data[2][j] = Tileset.WALL;
+            }
+        }
+    }
+
+    public static class VerticalHallway extends Hallway {
+        public VerticalHallway(int height, int width, int positionX, int positionY) {
+            super(height, width, positionX, positionY);
+            assert width == 3;
+            for (int i = 0; i < height; ++i) {
+                data[i][0] = Tileset.WALL;
+                data[i][1] = Tileset.FLOOR;
+                data[i][2] = Tileset.WALL;
             }
         }
     }
