@@ -6,6 +6,8 @@ import byog.TileEngine.Tileset;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import static byog.util.ElementGenerator.HallwayWithATurn.Shapes.*;
+
 public class World2 extends MirrorCompatible<TETile> {
     public enum Orientations {Left, Right, Up, Down}
     public static final class RoomNotExpandableException extends RuntimeException {}
@@ -55,6 +57,7 @@ public class World2 extends MirrorCompatible<TETile> {
         return world;
     }
     private final int height, width;
+    private final LinkedList<ElementBase<TETile>> elements = new LinkedList<>();
     private final LinkedList<ElementGenerator.Room> rooms = new LinkedList<>();
     private final Random random = new Random();
 
@@ -72,7 +75,7 @@ public class World2 extends MirrorCompatible<TETile> {
     protected boolean hasVerticalSpaceAround(Coordinate c) {
         final int x = c.x;
         final int y = c.y;
-        return !(x == 0 || x == height - 1) &&
+        return !(x < 1 || x > height - 2) &&
                 world[x][y] == Tileset.NOTHING &&
                 world[x-1][y] == Tileset.NOTHING &&
                 world[x+1][y] == Tileset.NOTHING;
@@ -81,7 +84,7 @@ public class World2 extends MirrorCompatible<TETile> {
     protected boolean hasHorizontalSpaceAround(Coordinate c) {
         final int x = c.x;
         final int y = c.y;
-        return !(y == 0 || y == width - 1) &&
+        return !(y < 1 || y > width - 2) &&
                 world[x][y] == Tileset.NOTHING &&
                 world[x][y-1] == Tileset.NOTHING &&
                 world[x][y+1] == Tileset.NOTHING;
@@ -90,7 +93,8 @@ public class World2 extends MirrorCompatible<TETile> {
     protected boolean hasSpaceAround(Coordinate c) {
         final int x = c.x;
         final int y = c.y;
-        return hasHorizontalSpaceAround(c) &&
+        return x > 0 && x < height - 1 && y > 0 && y < width - 1 &&
+                hasHorizontalSpaceAround(c) &&
                 hasVerticalSpaceAround(c) &&
                 world[x-1][y-1] == Tileset.NOTHING &&
                 world[x-1][y+1] == Tileset.NOTHING &&
@@ -98,7 +102,7 @@ public class World2 extends MirrorCompatible<TETile> {
                 world[x+1][y+1] == Tileset.NOTHING;
     }
 
-    protected boolean expandable(Coordinate c, Orientations o) {
+    protected boolean expandableCore(Coordinate c, Orientations o) {
         int x = c.x, y = c.y;
         x = switch (o) {
             case Up -> x - 2;
@@ -108,30 +112,34 @@ public class World2 extends MirrorCompatible<TETile> {
         y = switch (o) {
             case Left -> y - 2;
             case Right -> y + 2;
-            default -> x;
+            default -> y;
         };
 
         int x1 = c.x, y1 = c.y;
         x1 = switch (o) {
-            case Up -> x - 1;
-            case Down -> x + 1;
-            default -> x;
+            case Up -> x1 - 1;
+            case Down -> x1 + 1;
+            default -> x1;
         };
         y1 = switch (o) {
-            case Left -> y - 1;
-            case Right -> y + 1;
-            default -> y;
+            case Left -> y1 - 1;
+            case Right -> y1 + 1;
+            default -> y1;
         };
-        return hasSpaceAround(new Coordinate(x, y)) && hasSpaceAround(new Coordinate(x1, y1));
+        return hasSpaceAround(new Coordinate(x, y)) && switch (o) {
+            case Left, Right -> hasVerticalSpaceAround(new Coordinate(x1, y1));
+            case Up, Down -> hasHorizontalSpaceAround(new Coordinate(x1, y1));
+        };
     }
 
     protected int maxExpandLength(Coordinate c, Orientations o) {
         int s = 0;
         Coordinate nc = Coordinate.copyOf(c);
-        while (expandable(nc, o)) {
+        while (expandableCore(nc, o)) {
+            System.out.print(1);
             nc.setX(switch (o) {
                 case Up -> nc.x - 1;
-                case Right -> nc.x + 1;
+                case Down -> nc.x + 1;
                 default -> nc.x;
             });
             nc.setY(switch (o) {
@@ -141,7 +149,12 @@ public class World2 extends MirrorCompatible<TETile> {
             });
             ++s;
         }
+        assert s != 0;
         return s;
+    }
+
+    protected boolean expandable(Coordinate c, Orientations o) {
+        return maxExpandLength(c, o) > 1;
     }
 
     protected int findLeftBar(Coordinate c) {
@@ -190,7 +203,7 @@ public class World2 extends MirrorCompatible<TETile> {
 
     public ExpansionResult expand(Coordinate c, Orientations o, int maximumLength, boolean noTurn) {
         // TODO: add areaLimit param
-        final int expandLength = random.nextInt(1, Math.min(maximumLength, maxExpandLength(c, o)));
+        final int expandLength = random.nextInt(noTurn ? 3 : 2, Math.min(maximumLength, maxExpandLength(c, o)) + 1);
         final Coordinate nc = switch (o) {
             case Left -> new Coordinate(c.x, c.y - expandLength);
             case Right -> new Coordinate(c.x, c.y + expandLength);
@@ -205,11 +218,12 @@ public class World2 extends MirrorCompatible<TETile> {
         };
 
         final boolean canTurn = switch (o) {
-            case Up, Down -> expandable(nc, Orientations.Left) || expandable(nc, Orientations.Right);
-            case Left, Right -> expandable(nc, Orientations.Up) || expandable(nc, Orientations.Down);
+            case Up, Down -> maxExpandLength(nc, Orientations.Left) > 2 || maxExpandLength(nc, Orientations.Right) > 2;
+            case Left, Right -> maxExpandLength(nc, Orientations.Up) > 2 || maxExpandLength(nc, Orientations.Down) > 2;
         };
-        if (!noTurn && canTurn) {
-            final boolean turn = random.nextBoolean();
+        if (!noTurn && canTurn && expandLength > 2) {
+//            final boolean turn = random.nextBoolean();
+            /* debug */ boolean turn = true;
             if (turn) {
 
                 Orientations nextO;
@@ -221,10 +235,43 @@ public class World2 extends MirrorCompatible<TETile> {
                         case Up, Down -> Orientations.Right;
                         case Left, Right -> Orientations.Down;
                     };
+                    System.out.print(3);
                 } while (!expandable(nc, nextO));
 
                 var turnResult = expand(nc, nextO, maximumLength, true);
-                return new ExpansionResult(turnResult.room, turnResult.hallways.getFirst(), hallway);
+                var hw_positionX = switch (o) {
+                    case Up, Down -> hallway.positionX;
+                    case Left, Right -> turnResult.hallways.getFirst().positionX;
+                };
+                var hw_positionY = switch (nextO) {
+                    case Up, Down -> hallway.positionY;
+                    case Left, Right -> turnResult.hallways.getFirst().positionY;
+                };
+
+                var hw_height = switch (o) {
+                    case Up, Down -> hallway.height + 1;
+                    case Left, Right -> turnResult.hallways.getFirst().height;
+                };
+
+                var hw_width = switch(nextO) {
+                    case Up, Down -> hallway.width + 1;
+                    case Left, Right -> turnResult.hallways.getFirst().width;
+                };
+
+                ElementGenerator.HallwayWithATurn.Shapes shape;
+                //TODO this is wrong
+                if ((o == Orientations.Up && nextO == Orientations.Left) || (o == Orientations.Left && nextO == Orientations.Up)) {
+                    shape = TopRight;
+                } else if ((o == Orientations.Up && nextO == Orientations.Right) || (o == Orientations.Right && nextO == Orientations.Up)) {
+                    shape = TopLeft;
+                } else if ((o == Orientations.Down && nextO == Orientations.Right) || (o == Orientations.Right && nextO == Orientations.Down)) {
+                    shape = BottomLeft;
+                } else {
+                    shape = BottomRight;
+                }
+
+                var hw = new ElementGenerator.HallwayWithATurn(hw_height, hw_width, hw_positionX, hw_positionY, shape);
+                return new ExpansionResult(turnResult.room, hw);
             }
         }
         final ElementGenerator.Room room = switch (o) {
@@ -240,13 +287,13 @@ public class World2 extends MirrorCompatible<TETile> {
                     default -> -1;
                 };
                 final int yA = switch (o) {
-                    case Left -> random.nextInt(y1 + 1, y2);
+                    case Left -> random.nextInt(y1 + 1, y2 - 1);
                     case Right -> nc.y;
                     default -> -1;
                 };
                 final int yB = switch (o) {
                     case Left -> nc.y;
-                    case Right -> random.nextInt(y1 + 1, y2);
+                    case Right -> random.nextInt(y1 + 2, y2);
                     default -> -1;
                 };
                 int x1 = -1, x2 = -1;
@@ -279,13 +326,13 @@ public class World2 extends MirrorCompatible<TETile> {
                     default -> -1;
                 };
                 final int xA = switch (o) {
-                    case Up -> random.nextInt(x1 + 1, x2);
+                    case Up -> random.nextInt(x1 + 1, x2 - 1);
                     case Down -> nc.x;
                     default -> -1;
                 };
                 final int xB = switch (o) {
                     case Up -> nc.x;
-                    case Down -> random.nextInt(x1 + 1, x2);
+                    case Down -> random.nextInt(x1 + 2, x2);
                     default -> -1;
                 };
                 int y1 = -1, y2 = -1;
@@ -299,6 +346,7 @@ public class World2 extends MirrorCompatible<TETile> {
                     temp = findRightBar(new Coordinate(x, nc.y));
                     if (temp - nc.y < leftmostRightBarDistance) {
                         leftmostRightBarDistance = temp - nc.y;
+                        y2 = temp;
                     }
                 }
                 final int yA = random.nextInt(y1 + 1, nc.y);
@@ -317,18 +365,18 @@ public class World2 extends MirrorCompatible<TETile> {
 
     public ExpansionResult expand(ElementGenerator.Room r, int maximumLength)  throws RoomNotExpandableException {
         LinkedList<ExpansionPair> possibleExpansions = new LinkedList<>();
-        for (int x = r.positionX; x < r.positionX + r.height; ++x) {
+        for (int x = r.positionX + 1; x < r.positionX + r.height - 1; ++x) {
             Coordinate c;
             c = new Coordinate(x, r.positionY);
             if (expandable(c, Orientations.Left)) {
                 possibleExpansions.add(new ExpansionPair(c, Orientations.Left));
             }
-            c = new Coordinate(x, r.positionY + r.width + 1);
+            c = new Coordinate(x, r.positionY + r.width - 1);
             if (expandable(c, Orientations.Right)) {
                 possibleExpansions.add(new ExpansionPair(c, Orientations.Right));
             }
         }
-        for (int y = r.positionY; y < r.positionY + r.width; ++y) {
+        for (int y = r.positionY + 1; y < r.positionY + r.width - 1; ++y) {
             Coordinate c;
             c = new Coordinate(r.positionX, y);
             if (expandable(c, Orientations.Up)) {
@@ -352,8 +400,39 @@ public class World2 extends MirrorCompatible<TETile> {
         final int choice = random.nextInt(rooms.size());
         while (true) {
             try {
+                System.out.print(2);
                 return expand(rooms.get(choice), maximumLength);
             } catch (RoomNotExpandableException ignored) {}
         }
+    }
+
+    public void cacheAndMerge(ElementBase<TETile> element) {
+        assert !elements.contains(element);
+        elements.add(element);
+        if (element instanceof ElementGenerator.Room roomElement) {
+            rooms.add(roomElement);
+        }
+        for (int i = 0; i < element.height; ++i) {
+            for (int j = 0; j < element.width; ++j) {
+                if (element.data[i][j] != Tileset.NOTHING) {
+                    world[element.positionX + i][element.positionY + j] = element.data[i][j];
+                }
+            }
+        }
+    }
+
+    public void cacheAndMerge(Iterable<? extends ElementBase<TETile>> elements) {
+        for (var element : elements) {
+            cacheAndMerge(element);
+        }
+    }
+
+    public ElementGenerator.Room buildFirstRoom(int areaLimit) {
+//        final int x1 = random.nextInt(height - 3);
+//        final int x2 = random.nextInt(x1 + 2, height - 1);
+//        final int y1 = random.nextInt(width - 3);
+//        final int y2 = random.nextInt(y1 + 2, width - 1);
+//        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
+        return new ElementGenerator.Room(10, 20, 1, 1);
     }
 }
