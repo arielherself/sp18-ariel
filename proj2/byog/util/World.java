@@ -214,10 +214,6 @@ public class World extends MirrorCompatible<TETile> {
                 }
             }
             if (connectable) {
-                System.out.printf("roomA: %d %d %d %d\nroomB: %d, %d, %d, %d\nx: %d\n\n", roomA.positionX, roomA.positionY,
-                        roomA.positionX + roomA.height - 1, roomA.positionY + roomA.width - 1, roomB.positionX, roomB.positionY,
-                        roomB.positionX + roomB.height - 1, roomB.positionY + roomB.width - 1, x
-                        );
                 candidates.add(new ElementGenerator.Hallway(3, roomB.positionY - roomA.positionY - roomA.width + 2,
                         x - 1, roomA.positionY + roomA.width - 1));
             }
