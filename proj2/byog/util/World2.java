@@ -211,17 +211,17 @@ public class World2 extends MirrorCompatible<TETile> {
             case Down -> new Coordinate(c.x + expandLength, c.y);
         };
         final var hallway = switch (o) {
-            case Left -> new ElementGenerator.Hallway(3, expandLength + 1, c.x - 1, c.y - expandLength - 1);
+            case Left -> new ElementGenerator.Hallway(3, expandLength + 1, c.x - 1, c.y - expandLength);
             case Right -> new ElementGenerator.Hallway(3, expandLength + 1, c.x - 1, c.y);
-            case Up -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x - expandLength - 1, c.y - 1);
+            case Up -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x - expandLength, c.y - 1);
             case Down -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x, c.y - 1);
         };
 
         final boolean canTurn = switch (o) {
             case Up, Down -> maxExpandLength(nc, Orientations.Left) > 2 || maxExpandLength(nc, Orientations.Right) > 2;
             case Left, Right -> maxExpandLength(nc, Orientations.Up) > 2 || maxExpandLength(nc, Orientations.Down) > 2;
-        };
-        if (!noTurn && canTurn && expandLength > 2) {
+        } && expandLength >= 3;
+        if ((!noTurn) && canTurn) {
 //            final boolean turn = random.nextBoolean();
             /* debug */ boolean turn = true;
             if (turn) {
@@ -259,13 +259,12 @@ public class World2 extends MirrorCompatible<TETile> {
                 };
 
                 ElementGenerator.HallwayWithATurn.Shapes shape;
-                //TODO this is wrong
-                if ((o == Orientations.Up && nextO == Orientations.Left) || (o == Orientations.Left && nextO == Orientations.Up)) {
+                if ((o == Orientations.Up && nextO == Orientations.Left) || (o == Orientations.Right && nextO == Orientations.Down)){
                     shape = TopRight;
-                } else if ((o == Orientations.Up && nextO == Orientations.Right) || (o == Orientations.Right && nextO == Orientations.Up)) {
-                    shape = TopLeft;
-                } else if ((o == Orientations.Down && nextO == Orientations.Right) || (o == Orientations.Right && nextO == Orientations.Down)) {
+                } else if ((o == Orientations.Left && nextO == Orientations.Up) || (o == Orientations.Down && nextO == Orientations.Right)) {
                     shape = BottomLeft;
+                } else if ((o == Orientations.Up && nextO == Orientations.Right) || (o == Orientations.Left && nextO == Orientations.Down)) {
+                    shape = TopLeft;
                 } else {
                     shape = BottomRight;
                 }
