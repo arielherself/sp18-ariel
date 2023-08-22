@@ -208,7 +208,7 @@ public class World2 extends MirrorCompatible<TETile> {
             case Up, Down -> expandable(nc, Orientations.Left) || expandable(nc, Orientations.Right);
             case Left, Right -> expandable(nc, Orientations.Up) || expandable(nc, Orientations.Down);
         };
-        if (canTurn) {
+        if (!noTurn && canTurn) {
             final boolean turn = random.nextBoolean();
             if (turn) {
 
@@ -268,8 +268,43 @@ public class World2 extends MirrorCompatible<TETile> {
                 final int width = yB - yA + 1, height = xB - xA + 1;
                 yield new ElementGenerator.Room(height, width, xA, yA);
             } case Up, Down -> {
-                // TODO: implement these two cases
-                yield null;
+                final int x1 = switch (o) {
+                    case Up -> findTopBar(nc);
+                    case Down -> nc.x;
+                    default -> -1;
+                };
+                final int x2 = switch (o) {
+                    case Up -> nc.x;
+                    case Down -> findBottomBar(nc);
+                    default -> -1;
+                };
+                final int xA = switch (o) {
+                    case Up -> random.nextInt(x1 + 1, x2);
+                    case Down -> nc.x;
+                    default -> -1;
+                };
+                final int xB = switch (o) {
+                    case Up -> nc.x;
+                    case Down -> random.nextInt(x1 + 1, x2);
+                    default -> -1;
+                };
+                int y1 = -1, y2 = -1;
+                int rightmostLeftBarDistance = this.width, leftmostRightBarDistance = this.width, temp;
+                for (int x = xA; x <= xB; ++x) {
+                    temp = findLeftBar(new Coordinate(x, nc.y));
+                    if (nc.y - temp < rightmostLeftBarDistance) {
+                        rightmostLeftBarDistance = nc.y - temp;
+                        y1 = temp;
+                    }
+                    temp = findRightBar(new Coordinate(x, nc.y));
+                    if (temp - nc.y < leftmostRightBarDistance) {
+                        leftmostRightBarDistance = temp - nc.y;
+                    }
+                }
+                final int yA = random.nextInt(y1 + 1, nc.y);
+                final int yB = random.nextInt(nc.y + 1, y2);
+                final int width = yB - yA + 1, height = xB - xA + 1;
+                yield new ElementGenerator.Room(height, width, xA, yA);
             }
         };
 
@@ -311,5 +346,14 @@ public class World2 extends MirrorCompatible<TETile> {
 
         final int choice = random.nextInt(possibleExpansions.size());
         return expand(possibleExpansions.get(choice), maximumLength);
+    }
+
+    public ExpansionResult randomExpand(int maximumLength) {
+        final int choice = random.nextInt(rooms.size());
+        while (true) {
+            try {
+                return expand(rooms.get(choice), maximumLength);
+            } catch (RoomNotExpandableException ignored) {}
+        }
     }
 }
