@@ -209,11 +209,11 @@ public class World2 extends MirrorCompatible<TETile> {
             case Up -> new Coordinate(c.x - expandLength, c.y);
             case Down -> new Coordinate(c.x + expandLength, c.y);
         };
-        final var hallway = switch (o) {
-            case Left -> new ElementGenerator.Hallway(3, expandLength + 1, c.x - 1, c.y - expandLength);
-            case Right -> new ElementGenerator.Hallway(3, expandLength + 1, c.x - 1, c.y);
-            case Up -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x - expandLength, c.y - 1);
-            case Down -> new ElementGenerator.Hallway(expandLength + 1, 3, c.x, c.y - 1);
+        var hallway = switch (o) {
+            case Left -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, c.x - 1, c.y - expandLength);
+            case Right -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, c.x - 1, noTurn ? c.y - 1 : c.y);
+            case Up -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, c.x - expandLength, c.y - 1);
+            case Down -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, noTurn ? c.x - 1 : c.x, c.y - 1);
         };
         System.out.println(o);
         System.out.printf("c=(%d, %d), expandLength = %d\n\n", c.x, c.y, expandLength);
@@ -226,6 +226,14 @@ public class World2 extends MirrorCompatible<TETile> {
             final boolean turn = random.nextBoolean();
             if (turn) {
 
+                hallway = switch (o) {
+                    case Left -> new ElementGenerator.HorizontalHallway(3, expandLength + 2, c.x - 1, c.y - expandLength - 1);
+                    case Right -> new ElementGenerator.HorizontalHallway(3, expandLength + 2, c.x - 1, c.y);
+                    case Up -> new ElementGenerator.HorizontalHallway(expandLength + 2, 3, c.x - expandLength - 1, c.y - 1);
+                    case Down -> new ElementGenerator.HorizontalHallway(expandLength + 2, 3, c.x, c.y - 1);
+                };
+
+                // TODO fix: infinite loop
                 Orientations nextO;
                 do {
                     nextO = random.nextInt(2) == 0 ? switch (o) {
@@ -248,12 +256,12 @@ public class World2 extends MirrorCompatible<TETile> {
                 };
 
                 var hw_height = switch (o) {
-                    case Up, Down -> hallway.height + 1;
+                    case Up, Down -> hallway.height;
                     case Left, Right -> turnResult.hallways.getFirst().height;
                 };
 
                 var hw_width = switch(nextO) {
-                    case Up, Down -> hallway.width + 1;
+                    case Up, Down -> hallway.width;
                     case Left, Right -> turnResult.hallways.getFirst().width;
                 };
 
