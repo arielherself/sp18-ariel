@@ -4,13 +4,13 @@ import java.lang.reflect.Array;
 
 public abstract class MirrorCompatible<T> {
     public final T[][] mirrored(Class<T> c) {
-        var target = getData();
+        var target = getData().clone();
         if (target.length == 0) {
-            return target.clone();
+            return target;
         }
         final int m = target.length;
         final int n = target[0].length;
-        for (int i = 0; i < m / 2; ++i) {
+        for (int i = 0; i < (m + 1) / 2; ++i) {
             var temp = target[i];
             target[i] = target[m - i - 1];
             target[m - i - 1] = temp;
