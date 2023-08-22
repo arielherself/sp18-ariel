@@ -118,7 +118,7 @@ public class World extends MirrorCompatible<TETile> {
         return height;
     }
 
-    public ElementGenerator.Room buildMergeableRoom() throws RuntimeException {
+    public ElementGenerator.Room buildMergeableRoom(int areaLimit) throws RuntimeException {
         if (isNoSpaceLeftForRooms()) {
             throw new RuntimeException("No enough space for a new room");
         }
@@ -142,8 +142,11 @@ public class World extends MirrorCompatible<TETile> {
         int upperBound = findTopBar(x, y); // excluded
         int lowerBound = findBottomBar(x, y); // excluded
 
-        final int x1 = (upperBound + 1 < x) ? random.nextInt(upperBound + 1, x) : x;
-        final int x2 = (x + 1 < lowerBound - 1) ? random.nextInt(x + 1, lowerBound) : lowerBound - 1;
+        int x1, x2;
+        x1 = (upperBound + 1 < x) ? random.nextInt(upperBound + 1, x) : x;
+        lowerBound = Math.min(lowerBound, x1 + areaLimit);
+        assert lowerBound >= x;
+        x2 = (x + 1 < lowerBound - 1) ? random.nextInt(x + 1, lowerBound) : lowerBound - 1;
 
         int rightmostLeftBarDistance = width + 1, leftmostRightBarDistance = width + 1, y1 = y, y2 = y;
         for (int i = x1; i <= x2; ++i) {
@@ -157,7 +160,10 @@ public class World extends MirrorCompatible<TETile> {
             }
         }
         y1 = (y1 + 1 < y) ? random.nextInt(y1 + 1, y) : y - 1;
+        y2 = Math.min(y2, y1 + areaLimit / (x2 - x1) - 1);
+        assert y2 >= y;
         y2 = (y + 1 < y2) ? random.nextInt(y + 1, y2) : y + 1;
+
         return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
     }
 
