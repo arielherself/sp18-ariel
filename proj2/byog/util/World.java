@@ -418,12 +418,13 @@ public class World extends MirrorCompatible<TETile> {
 
     protected LinkedList<ElementGenerator.Hallway> buildHallwaysWithATurn(ElementGenerator.Room roomA, ElementGenerator.Room roomB) {
         LinkedList<ElementGenerator.Hallway> result = new LinkedList<>();
-        try {
-            result.addAll(buildHallwaysWithAnUpwardTurn(roomA, roomB));
-        } catch (RuntimeException ignored) {}
-        try {
+        if (roomA.positionX > roomB.positionX) {
+            result.addAll(buildHallwaysWithADownwardTurn(roomB, roomA));
+//            result.addAll(buildHallwaysWithAnUpwardTurn(roomA, roomB));
+        } else if (roomA.positionX < roomB.positionX) {
             result.addAll(buildHallwaysWithADownwardTurn(roomA, roomB));
-        } catch (RuntimeException ignored) {}
+//            result.addAll(buildHallwaysWithAnUpwardTurn(roomB, roomA));
+        }
         return result;
     }
 
