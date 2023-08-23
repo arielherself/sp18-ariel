@@ -208,9 +208,8 @@ public class World2 extends MirrorCompatible<TETile> {
         return height;
     }
 
-    public ExpansionResult expand(Coordinate c, Orientations o, int maximumLength, boolean noTurn) {
-        // TODO: add areaLimit param
-        final int expandLength = random.nextInt(noTurn ? 3 : 2, Math.min(maximumLength, maxExpandLength(c, o)) + 1);
+    public ExpansionResult expand(Coordinate c, Orientations o, int maximumLength, boolean noTurn, int areaLimit) {
+        final int expandLength = Math.min(random.nextInt(noTurn ? 3 : 2, Math.min(maximumLength, maxExpandLength(c, o)) + 1), areaLimit + 1);
         final Coordinate nc = switch (o) {
             case Left -> new Coordinate(c.x, c.y - expandLength);
             case Right -> new Coordinate(c.x, c.y + expandLength);
@@ -229,13 +228,13 @@ public class World2 extends MirrorCompatible<TETile> {
         final ElementGenerator.Room room = switch (o) {
             case Left, Right -> {
                 final int y1 = switch (o) {
-                    case Left -> findLeftBar(nc); // excluded
+                    case Left -> Math.max(findLeftBar(nc), nc.y - areaLimit / 3 + 1); // excluded
                     case Right -> nc.y;
                     default -> -1;
                 };
                 final int y2 = switch (o) {
                     case Left -> nc.y; // excluded
-                    case Right -> findRightBar(nc);
+                    case Right -> Math.min(findRightBar(nc), nc.y + areaLimit / 3 - 1);
                     default -> -1;
                 };
                 final int yA = switch (o) {
@@ -262,19 +261,20 @@ public class World2 extends MirrorCompatible<TETile> {
                         x2 = temp;
                     }
                 }
-                final int xA = random.nextInt(x1 + 1, nc.x);
-                final int xB = random.nextInt(nc.x + 1, x2);
+                final int maxHeight = areaLimit / Math.abs(yA - yB + 1);
+                final int xA = random.nextInt(Math.max(x1, nc.x - maxHeight + 1) + 1, nc.x);
+                final int xB = random.nextInt(nc.x + 1, Math.min(x2, maxHeight + xA));
                 final int width = yB - yA + 1, height = xB - xA + 1;
                 yield new ElementGenerator.Room(height, width, xA, yA);
             } case Up, Down -> {
                 final int x1 = switch (o) {
-                    case Up -> findTopBar(nc);
+                    case Up -> Math.max(findTopBar(nc), nc.x - areaLimit / 3 - 1);
                     case Down -> nc.x;
                     default -> -1;
                 };
                 final int x2 = switch (o) {
                     case Up -> nc.x;
-                    case Down -> findBottomBar(nc);
+                    case Down -> Math.min(findBottomBar(nc), nc.x + areaLimit / 3 + 1);
                     default -> -1;
                 };
                 final int xA = switch (o) {
@@ -301,8 +301,9 @@ public class World2 extends MirrorCompatible<TETile> {
                         y2 = temp;
                     }
                 }
-                final int yA = random.nextInt(y1 + 1, nc.y);
-                final int yB = random.nextInt(nc.y + 1, y2);
+                final int maxWidth = areaLimit / Math.abs(xA - xB + 1);
+                final int yA = random.nextInt(Math.max(y1, nc.y - maxWidth + 1) + 1, nc.y);
+                final int yB = random.nextInt(nc.y + 1, Math.min(y2, yA + maxWidth));
                 final int width = yB - yA + 1, height = xB - xA + 1;
                 yield new ElementGenerator.Room(height, width, xA, yA);
             }
@@ -311,11 +312,11 @@ public class World2 extends MirrorCompatible<TETile> {
         return new ExpansionResult(room, hallway);
     }
 
-    public ExpansionResult expand(ExpansionPair p, int maximumLength) {
-        return expand(p.coordinate, p.orientation, maximumLength, false);
+    public ExpansionResult expand(ExpansionPair p, int maximumLength, int areaLimit) {
+        return expand(p.coordinate, p.orientation, maximumLength, false, areaLimit);
     }
 
-    public ExpansionResult expand(ElementGenerator.Room r, int maximumLength)  throws RoomNotExpandableException {
+    public ExpansionResult expand(ElementGenerator.Room r, int maximumLength, int areaLimit)  throws RoomNotExpandableException {
         LinkedList<ExpansionPair> possibleExpansions = new LinkedList<>();
         for (int x = r.positionX + 1; x < r.positionX + r.height - 1; ++x) {
             Coordinate c;
@@ -345,14 +346,14 @@ public class World2 extends MirrorCompatible<TETile> {
         }
 
         final int choice = random.nextInt(possibleExpansions.size());
-        return expand(possibleExpansions.get(choice), maximumLength);
+        return expand(possibleExpansions.get(choice), maximumLength, areaLimit);
     }
 
-    public ExpansionResult randomExpand(int maximumLength) {
         final int choice = random.nextInt(rooms.size());
         while (true) {
+    public ExpansionResult randomExpand(int maximumLength, int areaLimit) {
             try {
-                return expand(rooms.get(choice), maximumLength);
+                result.add(expand(room, maximumLength, areaLimit));
             } catch (RoomNotExpandableException ignored) {}
         }
     }
