@@ -5,8 +5,8 @@ import byog.TileEngine.Tileset;
 
 public final class ElementGenerator {
     public static final class Room extends ElementBase<TETile> {
-        public Room(int height, int width, int positionX, int positionY) {
-            super(TETile.class, height, width, positionX, positionY);
+        public Room(int height, int width, World.Coordinate c) {
+            super(TETile.class, height, width, c.x, c.y);
             assert height >= 3 && width >= 3;
 
             // Build walls
@@ -29,8 +29,8 @@ public final class ElementGenerator {
     }
 
     public static class Hallway extends ElementBase<TETile> {
-        public Hallway(int height, int width, int positionX, int positionY) {
-            super(TETile.class, height, width, positionX, positionY);
+        public Hallway(int height, int width, World.Coordinate c) {
+            super(TETile.class, height, width, c.x, c.y);
             assert (height == 3 || width == 3) && height != width;
 
             if (height == 3) {
@@ -50,8 +50,8 @@ public final class ElementGenerator {
     }
 
     public static class HorizontalHallway extends Hallway {
-        public HorizontalHallway(int height, int width, int positionX, int positionY) {
-            super(height, width, positionX, positionY);
+        public HorizontalHallway(int height, int width, World.Coordinate c) {
+            super(height, width, c);
             assert height == 3;
             for (int j = 0; j < width; ++j) {
                 data[0][j] = Tileset.WALL;
@@ -62,8 +62,8 @@ public final class ElementGenerator {
     }
 
     public static class VerticalHallway extends Hallway {
-        public VerticalHallway(int height, int width, int positionX, int positionY) {
-            super(height, width, positionX, positionY);
+        public VerticalHallway(int height, int width, World.Coordinate c) {
+            super(height, width, c);
             assert width == 3;
             for (int i = 0; i < height; ++i) {
                 data[i][0] = Tileset.WALL;
@@ -75,8 +75,8 @@ public final class ElementGenerator {
 
     public static final class Door extends ElementBase<TETile> {
         private boolean locked = true;
-        public Door(int positionX, int positionY) {
-            super(TETile.class, 1, 1, positionX, positionY);
+        public Door(World.Coordinate c) {
+            super(TETile.class, 1, 1, c.x, c.y);
             data[0][0] = Tileset.LOCKED_DOOR;
         }
 

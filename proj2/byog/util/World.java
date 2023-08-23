@@ -215,10 +215,10 @@ public class World extends MirrorCompatible<TETile> {
             case Down -> new Coordinate(c.x + expandLength, c.y);
         };
         var hallway = switch (o) {
-            case Left -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, c.x - 1, c.y - expandLength);
-            case Right -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, c.x - 1, noTurn ? c.y - 1 : c.y);
-            case Up -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, c.x - expandLength, c.y - 1);
-            case Down -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, noTurn ? c.x - 1 : c.x, c.y - 1);
+            case Left -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, c.y - expandLength));
+            case Right -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, noTurn ? c.y - 1 : c.y));
+            case Up -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, new Coordinate(c.x - expandLength, c.y - 1));
+            case Down -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, new Coordinate(noTurn ? c.x - 1 : c.x, c.y - 1));
         };
         System.out.println(o);
         System.out.printf("c=(%d, %d), expandLength = %d\n\n", c.x, c.y, expandLength);
@@ -263,7 +263,7 @@ public class World extends MirrorCompatible<TETile> {
                 final int xA = random.nextInt(Math.max(x1, nc.x - maxHeight + 1) + 1, nc.x);
                 final int xB = random.nextInt(nc.x + 1, Math.min(x2, maxHeight + xA));
                 final int width = yB - yA + 1, height = xB - xA + 1;
-                yield new ElementGenerator.Room(height, width, xA, yA);
+                yield new ElementGenerator.Room(height, width, new Coordinate(xA, yA));
             } case Up, Down -> {
                 final int x1 = switch (o) {
                     case Up -> Math.max(findTopBar(nc), nc.x - areaLimit / 3 - 1);
@@ -303,7 +303,7 @@ public class World extends MirrorCompatible<TETile> {
                 final int yA = random.nextInt(Math.max(y1, nc.y - maxWidth + 1) + 1, nc.y);
                 final int yB = random.nextInt(nc.y + 1, Math.min(y2, yA + maxWidth));
                 final int width = yB - yA + 1, height = xB - xA + 1;
-                yield new ElementGenerator.Room(height, width, xA, yA);
+                yield new ElementGenerator.Room(height, width, new Coordinate(xA, yA));
             }
         };
 
@@ -382,6 +382,6 @@ public class World extends MirrorCompatible<TETile> {
         final int x2 = random.nextInt(x1 + 2, Math.min(areaLimit, height - 1));
         final int y1 = random.nextInt(width - 3);
         final int y2 = random.nextInt((x2 - x1 == 2) ? y1 + 3 : y1 + 2, Math.min(y1 + 2 + areaLimit / (x2 - x1), width - 1));
-        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, x1, y1);
+        return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, new Coordinate(x1, y1));
     }
 }
