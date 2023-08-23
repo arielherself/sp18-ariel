@@ -226,68 +226,6 @@ public class World2 extends MirrorCompatible<TETile> {
         System.out.println(o);
         System.out.printf("c=(%d, %d), expandLength = %d\n\n", c.x, c.y, expandLength);
 
-        final boolean canTurn = switch (o) {
-            case Up, Down -> maxExpandLength(nc, Orientations.Left) > 2 || maxExpandLength(nc, Orientations.Right) > 2;
-            case Left, Right -> maxExpandLength(nc, Orientations.Up) > 2 || maxExpandLength(nc, Orientations.Down) > 2;
-        } && expandLength >= 3;
-        if ((!noTurn) && canTurn) {
-            final boolean turn = random.nextBoolean();
-            if (turn) {
-
-                hallway = switch (o) {
-                    case Left -> new ElementGenerator.HorizontalHallway(3, expandLength + 2, c.x - 1, c.y - expandLength - 1);
-                    case Right -> new ElementGenerator.HorizontalHallway(3, expandLength + 2, c.x - 1, c.y);
-                    case Up -> new ElementGenerator.HorizontalHallway(expandLength + 2, 3, c.x - expandLength - 1, c.y - 1);
-                    case Down -> new ElementGenerator.HorizontalHallway(expandLength + 2, 3, c.x, c.y - 1);
-                };
-
-                // TODO fix: infinite loop
-                Orientations nextO;
-                do {
-                    nextO = random.nextInt(2) == 0 ? switch (o) {
-                        case Up, Down -> Orientations.Left;
-                        case Left, Right -> Orientations.Up;
-                    } : switch (o) {
-                        case Up, Down -> Orientations.Right;
-                        case Left, Right -> Orientations.Down;
-                    };
-                } while (!expandable(nc, nextO));
-
-                var turnResult = expand(nc, nextO, maximumLength, true);
-                var hw_positionX = switch (o) {
-                    case Up, Down -> hallway.positionX;
-                    case Left, Right -> turnResult.hallways.getFirst().positionX;
-                };
-                var hw_positionY = switch (nextO) {
-                    case Up, Down -> hallway.positionY;
-                    case Left, Right -> turnResult.hallways.getFirst().positionY;
-                };
-
-                var hw_height = switch (o) {
-                    case Up, Down -> hallway.height;
-                    case Left, Right -> turnResult.hallways.getFirst().height;
-                };
-
-                var hw_width = switch(nextO) {
-                    case Up, Down -> hallway.width;
-                    case Left, Right -> turnResult.hallways.getFirst().width;
-                };
-
-                ElementGenerator.HallwayWithATurn.Shapes shape;
-                if ((o == Orientations.Up && nextO == Orientations.Left) || (o == Orientations.Right && nextO == Orientations.Down)){
-                    shape = TopRight;
-                } else if ((o == Orientations.Left && nextO == Orientations.Up) || (o == Orientations.Down && nextO == Orientations.Right)) {
-                    shape = BottomLeft;
-                } else if ((o == Orientations.Up && nextO == Orientations.Right) || (o == Orientations.Left && nextO == Orientations.Down)) {
-                    shape = TopLeft;
-                } else {
-                    shape = BottomRight;
-                }
-
-                var hw = new ElementGenerator.HallwayWithATurn(hw_height, hw_width, hw_positionX, hw_positionY, shape);
-                return new ExpansionResult(turnResult.room, hw);
-            }
-        }
         final ElementGenerator.Room room = switch (o) {
             case Left, Right -> {
                 final int y1 = switch (o) {
