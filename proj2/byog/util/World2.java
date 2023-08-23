@@ -10,7 +10,15 @@ import static byog.util.ElementGenerator.HallwayWithATurn.Shapes.*;
 
 public class World2 extends MirrorCompatible<TETile> {
     public enum Orientations {Left, Right, Up, Down}
-    public static final class RoomNotExpandableException extends RuntimeException {}
+    public static final class RoomNotExpandableException extends RuntimeException {
+        public RoomNotExpandableException(String string) {
+            super(string);
+        }
+
+        public RoomNotExpandableException() {
+            super();
+        }
+    }
     public static class ExpansionPair {
         public final Coordinate coordinate;
         public final Orientations orientation;
