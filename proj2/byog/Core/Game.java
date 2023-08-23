@@ -40,6 +40,7 @@ public class Game {
             world.cacheAndMerge(result.hallway);
             System.out.println(TETile.toString(world.mirrored(TETile.class)));
         }
+        world.cacheAndMerge(world.buildLockedDoor());
     }
 
     /**

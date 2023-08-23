@@ -384,4 +384,18 @@ public class World extends MirrorCompatible<TETile> {
         final int y2 = random.nextInt((x2 - x1 == 2) ? y1 + 3 : y1 + 2, Math.min(y1 + 2 + areaLimit / (x2 - x1), width - 1));
         return new ElementGenerator.Room(x2 - x1 + 1, y2 - y1 + 1, new Coordinate(x1, y1));
     }
+
+    public ElementGenerator.Door buildLockedDoor() {
+        LinkedList<Coordinate> wallPosition = new LinkedList<>();
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                if (world[i][j] == Tileset.WALL) {
+                    wallPosition.add(new Coordinate(i, j));
+                }
+            }
+        }
+        Random random = new Random();
+        final int targetNo = random.nextInt(0, wallPosition.size());
+        return new ElementGenerator.Door(wallPosition.get(targetNo));
+    }
 }
