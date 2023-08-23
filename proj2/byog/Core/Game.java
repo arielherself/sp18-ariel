@@ -24,7 +24,7 @@ public class Game {
         ter.renderFrame(world.mirrored(TETile.class));
     }
 
-    public void initializeWorld2(int minNumberOfRooms, int maxNumberOfRooms) {
+    public void initializeWorld(int minNumberOfRooms, int maxNumberOfRooms) {
         Random random = new Random();
 
         world.cacheAndMerge(world.buildFirstRoom(50));
