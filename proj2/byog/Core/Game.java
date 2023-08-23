@@ -29,13 +29,14 @@ public class Game {
     public void initializeWorld2(int minNumberOfRooms, int maxNumberOfRooms) {
         Random random = new Random();
 
-        world.cacheAndMerge(world.buildFirstRoom(AREA / expectedNumberOfRooms));
-        render();
+        world.cacheAndMerge(world.buildFirstRoom(50));
+        World2.ExpansionResult result;
         int expectedNumberOfRooms = random.nextInt(Math.max(1, minNumberOfRooms), maxNumberOfRooms + 1);
         for (int i = 1; i < expectedNumberOfRooms; ++i) {
             var result = world.randomExpand(5);
+                result = world.randomExpand(5, 50);
             world.cacheAndMerge(result.room);
-            world.cacheAndMerge(result.hallways);
+            world.cacheAndMerge(result.hallway);
         }
     }
 
