@@ -349,13 +349,19 @@ public class World2 extends MirrorCompatible<TETile> {
         return expand(possibleExpansions.get(choice), maximumLength, areaLimit);
     }
 
-        final int choice = random.nextInt(rooms.size());
-        while (true) {
     public ExpansionResult randomExpand(int maximumLength, int areaLimit) {
+        LinkedList<ExpansionResult> result = new LinkedList<>();
+        for (var room : rooms) {
             try {
                 result.add(expand(room, maximumLength, areaLimit));
             } catch (RoomNotExpandableException ignored) {}
         }
+
+        if (result.isEmpty()) {
+            throw new RoomNotExpandableException("No room is expandable");
+        }
+
+        return result.get(random.nextInt(result.size()));
     }
 
     public void cacheAndMerge(ElementBase<TETile> element) {
