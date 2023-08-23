@@ -4,7 +4,6 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.util.ElementGenerator;
 import byog.util.World;
-import byog.util.World2;
 
 import java.util.*;
 
@@ -16,7 +15,7 @@ public class Game {
     public static final int AREA = WIDTH * HEIGHT;
 
     private int numberOfRooms;
-    private World2 world = new World2(HEIGHT, WIDTH);
+    private World world = new World(HEIGHT, WIDTH);
 
     public Game() {
         ter.initialize(WIDTH, HEIGHT);
@@ -30,12 +29,12 @@ public class Game {
         Random random = new Random();
 
         world.cacheAndMerge(world.buildFirstRoom(50));
-        World2.ExpansionResult result;
+        World.ExpansionResult result;
         int expectedNumberOfRooms = random.nextInt(Math.max(1, minNumberOfRooms), maxNumberOfRooms + 1);
         for (int i = 1; i < expectedNumberOfRooms; ++i) {
             try {
                 result = world.randomExpand(5, 50);
-            } catch (World2.RoomNotExpandableException ignored) {
+            } catch (World.RoomNotExpandableException ignored) {
                 break;
             }
             world.cacheAndMerge(result.room);
@@ -43,64 +42,6 @@ public class Game {
             System.out.println(TETile.toString(world.mirrored(TETile.class)));
         }
     }
-
-//    public void initializeWorld(int maxNumberOfRooms, int maxNumberOfHallways) {
-//        Random random = new Random();
-//
-//        /* Place the rooms */
-//        int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms + 1);
-//        numberOfRooms = 0;
-//        while (numberOfRooms < expectedNumberOfRooms && !world.isNoSpaceLeftForRooms()) {
-//            world.cacheAndMerge(world.buildMergeableRoom(AREA / expectedNumberOfRooms));
-//            ++numberOfRooms;
-//        }
-//
-//        /* Place the hallways */
-//        Map<ElementGenerator.Room, Integer> roomConnections = new HashMap<>();
-//        int expectedNumberOfHallways = random.nextInt(0, maxNumberOfHallways + 1);
-//        final var rooms = world.getRooms();
-//        for (int i = 0; i < rooms.length; ++i) {
-//            roomConnections.put(rooms[i], 0);
-//        }
-//        for (int i = 0; i < expectedNumberOfHallways; ++i) {
-//            var roomA = rooms[random.nextInt(0, rooms.length)];
-//            var roomB = rooms[random.nextInt(0, rooms.length)];
-//            while (roomA == roomB) {
-//                roomB = rooms[random.nextInt(0, rooms.length)];
-//            }
-//            var hallway = world.buildHallway(roomA, roomB);
-//            if (hallway != null) {
-//                try {
-//                    world.cacheAndMerge(hallway);
-//                    roomConnections.put(roomA, roomConnections.get(roomA) + 1);
-//                    roomConnections.put(roomB, roomConnections.get(roomB) + 1);
-//                } catch (AssertionError ignored) {}
-//            }
-//        }
-//        System.out.println(roomConnections);
-//        for (var roomA : roomConnections.keySet()) { // All rooms must be connected twice!
-//            if (roomConnections.get(roomA) < 2) {
-//                while (true) {
-//                    var roomB = rooms[random.nextInt(0, rooms.length)];
-//                    while (roomA == roomB) {
-//                        roomB = rooms[random.nextInt(0, rooms.length)];
-//                    }
-//                    var hallway = world.buildHallway(roomA, roomB);
-//                    if (hallway == null) {
-//                        continue;
-//                    }
-//                    try {
-//                        world.cacheAndMerge(hallway);
-//                        roomConnections.put(roomA, roomConnections.get(roomA) + 1);
-//                        break;
-//                    } catch (AssertionError ignored) {}
-//                }
-//            }
-//        }
-//
-//        /* Place the door */
-//        world.buildLockedDoor();
-//    }
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
