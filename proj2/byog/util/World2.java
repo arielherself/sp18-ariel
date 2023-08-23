@@ -247,7 +247,7 @@ public class World2 extends MirrorCompatible<TETile> {
                     case Right -> random.nextInt(y1 + 2, y2);
                     default -> -1;
                 };
-                int x1 = -1, x2 = -1;
+                int x1 = -1, x2 = height;
                 int lowestTopBarDistance = this.height, highestBottomBarDistance = this.height, temp;
                 for (int y = yA; y <= yB; ++y) {
                     temp = findTopBar(new Coordinate(nc.x, y));
@@ -287,7 +287,7 @@ public class World2 extends MirrorCompatible<TETile> {
                     case Down -> random.nextInt(x1 + 2, x2);
                     default -> -1;
                 };
-                int y1 = -1, y2 = -1;
+                int y1 = -1, y2 = width;
                 int rightmostLeftBarDistance = this.width, leftmostRightBarDistance = this.width, temp;
                 for (int x = xA; x <= xB; ++x) {
                     temp = findLeftBar(new Coordinate(x, nc.y));
