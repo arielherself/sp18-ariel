@@ -26,12 +26,12 @@ public class Game {
         ter.renderFrame(world.mirrored(TETile.class));
     }
 
-    public void initializeWorld2(int maxNumberOfRooms) {
+    public void initializeWorld2(int minNumberOfRooms, int maxNumberOfRooms) {
         Random random = new Random();
 
-        int expectedNumberOfRooms = random.nextInt(1, maxNumberOfRooms + 1);
         world.cacheAndMerge(world.buildFirstRoom(AREA / expectedNumberOfRooms));
         render();
+        int expectedNumberOfRooms = random.nextInt(Math.max(1, minNumberOfRooms), maxNumberOfRooms + 1);
         for (int i = 1; i < expectedNumberOfRooms; ++i) {
             var result = world.randomExpand(5);
             world.cacheAndMerge(result.room);
