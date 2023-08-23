@@ -206,8 +206,8 @@ public class World extends MirrorCompatible<TETile> {
         return height;
     }
 
-    public ExpansionResult expand(Coordinate c, Orientations o, int maximumLength, boolean noTurn, int areaLimit) {
-        final int expandLength = Math.min(random.nextInt(noTurn ? 3 : 2, Math.min(maximumLength, maxExpandLength(c, o)) + 1), areaLimit + 1);
+    public ExpansionResult expand(Coordinate c, Orientations o, int maximumLength, int areaLimit) {
+        final int expandLength = Math.min(random.nextInt(2, Math.min(maximumLength, maxExpandLength(c, o)) + 1), areaLimit + 1);
         final Coordinate nc = switch (o) {
             case Left -> new Coordinate(c.x, c.y - expandLength);
             case Right -> new Coordinate(c.x, c.y + expandLength);
@@ -215,10 +215,10 @@ public class World extends MirrorCompatible<TETile> {
             case Down -> new Coordinate(c.x + expandLength, c.y);
         };
         ElementGenerator.Hallway hallway = switch (o) {
-            case Left -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, c.y - expandLength));
-            case Right -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, noTurn ? c.y - 1 : c.y));
-            case Up -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, new Coordinate(c.x - expandLength, c.y - 1));
-            case Down -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, new Coordinate(noTurn ? c.x - 1 : c.x, c.y - 1));
+            case Left -> new ElementGenerator.HorizontalHallway(3, expandLength + 1, new Coordinate(c.x - 1, c.y - expandLength));
+            case Right -> new ElementGenerator.HorizontalHallway(3, expandLength + 1, new Coordinate(c.x - 1, c.y));
+            case Up -> new ElementGenerator.VerticalHallway(expandLength + 1, 3, new Coordinate(c.x - expandLength, c.y - 1));
+            case Down -> new ElementGenerator.VerticalHallway(expandLength + 1, 3, new Coordinate(c.x, c.y - 1));
         };
         System.out.println(o);
         System.out.printf("c=(%d, %d), expandLength = %d\n\n", c.x, c.y, expandLength);
@@ -311,7 +311,7 @@ public class World extends MirrorCompatible<TETile> {
     }
 
     public ExpansionResult expand(ExpansionPair p, int maximumLength, int areaLimit) {
-        return expand(p.coordinate, p.orientation, maximumLength, false, areaLimit);
+        return expand(p.coordinate, p.orientation, maximumLength, areaLimit);
     }
 
     public ExpansionResult expand(ElementGenerator.Room r, int maximumLength, int areaLimit)  throws RoomNotExpandableException {
