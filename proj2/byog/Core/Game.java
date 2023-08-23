@@ -14,7 +14,7 @@ public class Game {
     public static final int AREA = WIDTH * HEIGHT;
 
     private int numberOfRooms;
-    private World world = new World(HEIGHT, WIDTH);
+    private final World world = new World(HEIGHT, WIDTH);
 
     public Game() {
         ter.initialize(WIDTH, HEIGHT);
