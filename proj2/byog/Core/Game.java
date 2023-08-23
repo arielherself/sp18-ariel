@@ -33,10 +33,14 @@ public class Game {
         World2.ExpansionResult result;
         int expectedNumberOfRooms = random.nextInt(Math.max(1, minNumberOfRooms), maxNumberOfRooms + 1);
         for (int i = 1; i < expectedNumberOfRooms; ++i) {
-            var result = world.randomExpand(5);
+            try {
                 result = world.randomExpand(5, 50);
+            } catch (World2.RoomNotExpandableException ignored) {
+                break;
+            }
             world.cacheAndMerge(result.room);
             world.cacheAndMerge(result.hallway);
+            System.out.println(TETile.toString(world.mirrored(TETile.class)));
         }
     }
 
