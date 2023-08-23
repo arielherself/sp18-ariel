@@ -21,13 +21,12 @@ public class World2 extends MirrorCompatible<TETile> {
         }
     }
     public static class ExpansionResult {
-        public final LinkedList<ElementGenerator.Hallway> hallways = new LinkedList<>();
+        public final ElementGenerator.Hallway hallway;
         public final ElementGenerator.Room room;
 
-        public ExpansionResult(ElementGenerator.Room room, ElementGenerator.Hallway... hallways) {
-            // TODO refactor: remove support for multiple hallways
+        public ExpansionResult(ElementGenerator.Room room, ElementGenerator.Hallway hallway) {
             this.room = room;
-            this.hallways.addAll(Arrays.asList(hallways));
+            this.hallway = hallway;
         }
     }
     public static class Coordinate {
@@ -424,12 +423,6 @@ public class World2 extends MirrorCompatible<TETile> {
                     world[element.positionX + i][element.positionY + j] = element.data[i][j];
                 }
             }
-        }
-    }
-
-    public void cacheAndMerge(Iterable<? extends ElementBase<TETile>> elements) {
-        for (var element : elements) {
-            cacheAndMerge(element);
         }
     }
 
