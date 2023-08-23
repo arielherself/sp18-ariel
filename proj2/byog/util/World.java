@@ -214,7 +214,7 @@ public class World extends MirrorCompatible<TETile> {
             case Up -> new Coordinate(c.x - expandLength, c.y);
             case Down -> new Coordinate(c.x + expandLength, c.y);
         };
-        var hallway = switch (o) {
+        ElementGenerator.Hallway hallway = switch (o) {
             case Left -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, c.y - expandLength));
             case Right -> new ElementGenerator.HorizontalHallway(3, noTurn ? expandLength + 2 : expandLength + 1, new Coordinate(c.x - 1, noTurn ? c.y - 1 : c.y));
             case Up -> new ElementGenerator.VerticalHallway(noTurn ? expandLength + 2 : expandLength + 1, 3, new Coordinate(c.x - expandLength, c.y - 1));
@@ -349,7 +349,7 @@ public class World extends MirrorCompatible<TETile> {
 
     public ExpansionResult randomExpand(int maximumLength, int areaLimit) {
         LinkedList<ExpansionResult> result = new LinkedList<>();
-        for (var room : rooms) {
+        for (ElementGenerator.Room room : rooms) {
             try {
                 result.add(expand(room, maximumLength, areaLimit));
             } catch (RoomNotExpandableException ignored) {}
