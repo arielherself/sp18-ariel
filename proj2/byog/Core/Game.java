@@ -2,7 +2,6 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import byog.util.ElementGenerator;
 import byog.util.World;
 
 import java.util.*;
