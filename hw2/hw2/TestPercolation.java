@@ -33,4 +33,15 @@ public class TestPercolation {
         instance.open(0, 0);
         assertTrue(instance.percolates());
     }
+
+    @Test
+    public void testNotPercolates2() {
+        Percolation instance = new Percolation(5);
+        final int[] openSequenceX = {0, 0, 1, 1, 2, 3, 4};
+        final int[] openSequenceY = {0, 2, 2, 4, 4, 4, 4};
+        for (int i = 0; i < openSequenceX.length; ++i) {
+            instance.open(openSequenceX[i], openSequenceY[i]);
+        }
+        assertFalse(instance.percolates());
+    }
 }
