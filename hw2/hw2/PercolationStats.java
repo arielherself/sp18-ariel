@@ -8,7 +8,7 @@ import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
 
 public class PercolationStats {
-    private final int[] x;
+    private final double[] x;
     private final int T;
 
     public PercolationStats(int N, int T, PercolationFactory pf) throws IllegalArgumentException {
@@ -17,7 +17,7 @@ public class PercolationStats {
         }
 
         this.T = T;
-        x = new int[T];
+        x = new double[T];
         for (int t = 0; t < T; ++t) {
             Percolation p = pf.make(N);
 
@@ -31,7 +31,7 @@ public class PercolationStats {
                 candidates.remove(index);
             }
 
-            x[t] = p.numberOfOpenSites() / (N * N);
+            x[t] = (double) p.numberOfOpenSites() / (N * N);
         }
     }
 
