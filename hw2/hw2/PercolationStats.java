@@ -31,7 +31,7 @@ public class PercolationStats {
                 candidates.remove(index);
             }
 
-            x[t] = p.numberOfOpenSites();
+            x[t] = p.numberOfOpenSites() / (N * N);
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Percolation {
     private final WeightedQuickUnionUF connectivityForPercolates, trueLastLineConnectivity;
     private final boolean[] openStatus;
-    final int N;
+    private final int N;
     private int openSiteCount = 0;
     private boolean firstLineOpened = false;
 
@@ -25,15 +25,15 @@ public class Percolation {
         }
     }
 
-    public int expandIndex(int x, int y) {
+    private int expandIndex(int x, int y) {
         return x * N + y;
     }
 
-    public int getAboveIndex(int expandedIndex) {
+    private int getAboveIndex(int expandedIndex) {
         return expandedIndex - N;
     }
 
-    public int getBelowIndex(int expandedIndex) {
+    private int getBelowIndex(int expandedIndex) {
         return expandedIndex + N;
     }
 
