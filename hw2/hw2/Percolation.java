@@ -38,6 +38,9 @@ public class Percolation {
     }
 
     public void open(int row, int col) {
+        if (openStatus[expandIndex(row, col)]) {
+            return ;
+        }
         openStatus[expandIndex(row, col)] = true;
         ++openSiteCount;
         ArrayList<Integer> toConnect = new ArrayList<>();
