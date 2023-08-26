@@ -20,46 +20,34 @@ public class Percolation {
             if (i != 0) {
                 trueLastLineConnectivity.union(i - 1, i);
                 connectivityForPercolates.union(i - 1, i);
-                connectivityForPercolates.union(expandIndex(N - 1, i - 1), expandIndex(N - 1, i));
+                connectivityForPercolates.union((N - 1) * N + i - 1, (N - 1) * N + i);
             }
         }
     }
 
-    private int expandIndex(int x, int y) {
-        return x * N + y;
-    }
-
-    private int getAboveIndex(int expandedIndex) {
-        return expandedIndex - N;
-    }
-
-    private int getBelowIndex(int expandedIndex) {
-        return expandedIndex + N;
-    }
-
     public void open(int row, int col) {
-        if (openStatus[expandIndex(row, col)]) {
+        if (openStatus[row * N + col]) {
             return ;
         }
-        openStatus[expandIndex(row, col)] = true;
+        openStatus[row * N + col] = true;
         ++openSiteCount;
         ArrayList<Integer> toConnect = new ArrayList<>();
         if (row > 0) {
-            toConnect.add(getAboveIndex(expandIndex(row, col)));
+            toConnect.add(row * N + col - N);
         }
         if (row < N - 1) {
-            toConnect.add(getBelowIndex(expandIndex(row, col)));
+            toConnect.add(row * N + col + N);
         }
         if (col > 0) {
-            toConnect.add(expandIndex(row, col - 1));
+            toConnect.add(row * N + col - 1);
         }
         if (col < N - 1) {
-            toConnect.add(expandIndex(row, col + 1));
+            toConnect.add(row * N + col + 1);
         }
         for (int c : toConnect) {
             if (openStatus[c]) {
-                connectivityForPercolates.union(c, expandIndex(row, col));
-                trueLastLineConnectivity.union(c, expandIndex(row, col));
+                connectivityForPercolates.union(c, row * N + col);
+                trueLastLineConnectivity.union(c, row * N + col);
             }
         }
         if (row == 0) {
@@ -67,13 +55,13 @@ public class Percolation {
         }
     }
     public boolean isOpen(int row, int col) {
-        return openStatus[expandIndex(row, col)];
+        return openStatus[row * N + col];
     }
     public boolean isFull(int row, int col) {
-        return openStatus[expandIndex(row, col)] && trueLastLineConnectivity.connected(expandIndex(row, col), 0);
+        return openStatus[row * N + col] && trueLastLineConnectivity.connected(row * N + col, 0);
     }
 
     public int numberOfOpenSites() { return openSiteCount; }
-    public boolean percolates() { return firstLineOpened && connectivityForPercolates.connected(expandIndex(N - 1, N - 1), 0); }
+    public boolean percolates() { return firstLineOpened && connectivityForPercolates.connected((N - 1) * N + N - 1, 0); }
     public static void main(String[] args) {}
 }
