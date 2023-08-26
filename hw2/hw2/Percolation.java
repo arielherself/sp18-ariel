@@ -2,74 +2,75 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.ArrayList;
+
 public class Percolation {
-    private final WeightedQuickUnionUF[] data;
-    private final int[] fullPos;
-    private final int[] openPos;
-    private int fullCount = 0;
+    private final WeightedQuickUnionUF connectivityForPercolates, trueLastLineConnectivity;
+    private final boolean[] openStatus;
+    final int N;
     private int openSiteCount = 0;
-    private final int size;
+    private boolean firstLineOpened = false;
 
     public Percolation(int N) {
-        fullPos = new int[N];
-        openPos = new int[N];
-        data = new WeightedQuickUnionUF[N];
+        this.N = N;
+        openStatus = new boolean[N * N];
+        trueLastLineConnectivity = new WeightedQuickUnionUF(N * N);
+        connectivityForPercolates = new WeightedQuickUnionUF(N * N);
         for (int i = 0; i < N; ++i) {
-            fullPos[i] = -1;
-            openPos[i] = -1;
-            data[i] = new WeightedQuickUnionUF(N);
-        }
-        size = N;
-    }
-    public void open(int row, int col) {
-        if (openPos[row] == -1) {
-            openPos[row] = col;
-        } else {
-            if (col > 0 && data[row].connected(col - 1, openPos[row])) {
-                data[row].union(col, openPos[row]);
+            if (i != 0) {
+                trueLastLineConnectivity.union(i - 1, i);
+                connectivityForPercolates.union(i - 1, i);
+                connectivityForPercolates.union(expandIndex(N - 1, i - 1), expandIndex(N - 1, i));
             }
-            if (col < size - 1 && data[row].connected(col + 1, openPos[row])) {
-                data[row].union(col, openPos[row]);
+        }
+    }
+
+    public int expandIndex(int x, int y) {
+        return x * N + y;
+    }
+
+    public int getAboveIndex(int expandedIndex) {
+        return expandedIndex - N;
+    }
+
+    public int getBelowIndex(int expandedIndex) {
+        return expandedIndex + N;
+    }
+
+    public void open(int row, int col) {
+        openStatus[expandIndex(row, col)] = true;
+        ++openSiteCount;
+        ArrayList<Integer> toConnect = new ArrayList<>();
+        if (row > 0) {
+            toConnect.add(getAboveIndex(expandIndex(row, col)));
+        }
+        if (row < N - 1) {
+            toConnect.add(getBelowIndex(expandIndex(row, col)));
+        }
+        if (col > 0) {
+            toConnect.add(expandIndex(row, col - 1));
+        }
+        if (col < N - 1) {
+            toConnect.add(expandIndex(row, col + 1));
+        }
+        for (int c : toConnect) {
+            if (openStatus[c]) {
+                connectivityForPercolates.union(c, expandIndex(row, col));
+                trueLastLineConnectivity.union(c, expandIndex(row, col));
             }
         }
         if (row == 0) {
-            if (fullPos[0] == -1) {
-                fullPos[0] = col;
-                ++fullCount;
-            }
-        } else {
-            final int[] tr = (row != size - 1) ? new int[] {row - 1, row + 1} : new int[] {row - 1};
-            for (int t : tr) {
-                if (fullPos[t] != -1) {
-                    if (data[t].connected(col, fullPos[t]) && fullPos[row] == -1) {
-                        fullPos[row] = col;
-                        ++fullCount;
-                    }
-                } else {
-                    if (fullPos[row] != -1 && data[row].connected(col, fullPos[row])
-                            && openPos[t] != -1 && data[t].connected(col, openPos[t])) {
-                        fullPos[t] = col;
-                        ++fullCount;
-                    }
-                }
-            }
+            firstLineOpened = true;
         }
-        ++openSiteCount;
     }
     public boolean isOpen(int row, int col) {
-        if (openPos[row] == -1) {
-            return false;
-        }
-        return data[row].connected(col, openPos[row]);
+        return openStatus[expandIndex(row, col)];
     }
     public boolean isFull(int row, int col) {
-        if (fullPos[row] == -1) {
-            return false;
-        }
-        return data[row].connected(col, fullPos[row]);
+        return openStatus[expandIndex(row, col)] && trueLastLineConnectivity.connected(expandIndex(row, col), 0);
     }
 
     public int numberOfOpenSites() { return openSiteCount; }
-    public boolean percolates() { return fullCount == size; }
+    public boolean percolates() { return firstLineOpened && connectivityForPercolates.connected(expandIndex(N - 1, N - 1), 0); }
     public static void main(String[] args) {}
 }
