@@ -31,21 +31,8 @@ public class Percolation {
         }
         openStatus[row * N + col] = true;
         ++openSiteCount;
-        ArrayList<Integer> toConnect = new ArrayList<>();
-        if (row > 0) {
-            toConnect.add(row * N + col - N);
-        }
-        if (row < N - 1) {
-            toConnect.add(row * N + col + N);
-        }
-        if (col > 0) {
-            toConnect.add(row * N + col - 1);
-        }
-        if (col < N - 1) {
-            toConnect.add(row * N + col + 1);
-        }
-        for (int c : toConnect) {
-            if (openStatus[c]) {
+        for (int c : new int[] {row * N + col - N, row * N + col + N, row * N + col - 1, row * N + col + 1}) {
+            if (c >= 0 && c < N * N && openStatus[c]) {
                 connectivityForPercolates.union(c, row * N + col);
                 trueLastLineConnectivity.union(c, row * N + col);
             }
