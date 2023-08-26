@@ -12,6 +12,7 @@ public class TestPercolation {
         for (int i = 0; i < openSequenceX.length; ++i) {
             instance.open(openSequenceX[i], openSequenceY[i]);
         }
+        assertEquals(openSequenceX.length, instance.numberOfOpenSites());
         assertTrue(instance.percolates());
     }
 
@@ -23,6 +24,7 @@ public class TestPercolation {
         for (int i = 0; i < openSequenceX.length; ++i) {
             instance.open(openSequenceX[i], openSequenceY[i]);
         }
+        assertEquals(openSequenceX.length, instance.numberOfOpenSites());
         assertFalse(instance.percolates());
     }
 
@@ -31,6 +33,7 @@ public class TestPercolation {
         Percolation instance = new Percolation(1);
         assertFalse(instance.percolates());
         instance.open(0, 0);
+        assertEquals(1, instance.numberOfOpenSites());
         assertTrue(instance.percolates());
     }
 
@@ -42,6 +45,7 @@ public class TestPercolation {
         for (int i = 0; i < openSequenceX.length; ++i) {
             instance.open(openSequenceX[i], openSequenceY[i]);
         }
+        assertEquals(openSequenceX.length, instance.numberOfOpenSites());
         assertFalse(instance.percolates());
     }
 }
