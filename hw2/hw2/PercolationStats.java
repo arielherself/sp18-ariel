@@ -21,14 +21,14 @@ public class PercolationStats {
         for (int t = 0; t < T; ++t) {
             Percolation p = pf.make(N);
 
-            ArrayList<Integer> candidatesX = (ArrayList<Integer>) IntStream.range(0, N).boxed().collect(Collectors.toList());
-            ArrayList<Integer> candidatesY = (ArrayList<Integer>) IntStream.range(0, N).boxed().collect(Collectors.toList());
+            ArrayList<Integer> candidates = (ArrayList<Integer>) IntStream.range(0, N * N).boxed().collect(Collectors.toList());
 
             while (!p.percolates()) {
-                final int index = StdRandom.uniform(0, candidatesX.size());
-                p.open(candidatesX.get(index), candidatesY.get(index));
-                candidatesX.remove(index);
-                candidatesY.remove(index);
+                final int index = StdRandom.uniform(0, candidates.size());
+                final int candidateX = candidates.get(index) / N;
+                final int candidateY = candidates.get(index) % N;
+                p.open(candidateX, candidateY);
+                candidates.remove(index);
             }
 
             x[t] = p.numberOfOpenSites();
