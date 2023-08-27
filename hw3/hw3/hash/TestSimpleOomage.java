@@ -1,15 +1,11 @@
 package hw3.hash;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 
 public class TestSimpleOomage {
@@ -23,12 +19,29 @@ public class TestSimpleOomage {
         }
     }
 
+    static class StrictHashSet<T> {
+        private HashSet<Integer> data = new HashSet<>();
+
+        public boolean contains(T t) {
+            return data.contains(t.hashCode());
+        }
+        public void add(T n) {
+            data.add(n.hashCode());
+        }
+    }
+
     @Test
     public void testHashCodePerfect() {
-        /* TODO: Write a test that ensures the hashCode is perfect,
-          meaning no two SimpleOomages should EVER have the same
-          hashCode UNLESS they have the same red, blue, and green values!
-         */
+        StrictHashSet<SimpleOomage> set = new StrictHashSet<>();
+        for (int r = 0; r < 256; r += 5) {
+            for (int g = 0; g < 256; g += 5) {
+                for (int b = 0; b < 256; b += 5) {
+                    SimpleOomage instance = new SimpleOomage(r, g, b);
+                    assertFalse(String.format("Object \"%s\" has hash code %d", instance, instance.hashCode()), set.contains(instance));
+                    set.add(instance);
+                }
+            }
+        }
     }
 
     @Test
