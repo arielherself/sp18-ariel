@@ -120,7 +120,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         while (leftIndex(index) <= size) {
             int targetIndex;
             if (rightIndex(index) <= size) {
-                targetIndex = contents[rightIndex(index)].myPriority < contents[leftIndex(index)].myPriority ? rightIndex(index) : leftIndex(index);
+                targetIndex = min(leftIndex(index), rightIndex(index));
             } else {
                 targetIndex = leftIndex(index);
             }
