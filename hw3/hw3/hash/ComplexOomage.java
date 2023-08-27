@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.StdDraw;
 import java.awt.Color;
+import java.util.Random;
+
 import edu.princeton.cs.algs4.StdRandom;
 
 public class ComplexOomage implements Oomage {
@@ -12,11 +14,13 @@ public class ComplexOomage implements Oomage {
     @Override
     public int hashCode() {
         int total = 0;
+        int bits = 0;
         for (int x : params) {
             total = total * 256;
             total = total + x;
         }
-        return total;
+        Random random = new Random(total);
+        return total / 10 * 10 + random.nextInt(10);
     }
 
     @Override
