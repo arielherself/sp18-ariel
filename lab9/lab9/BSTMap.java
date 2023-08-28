@@ -197,6 +197,28 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         }
     }
 
+    public V removeHelper(K key, V value, Node parent, Node current) {
+        if (current == null) {
+            return null;
+        }
+        if (key.compareTo(current.key) == 0 && value != null && value.equals(current.value)) {
+            V resultValue = current.value;
+            Node resultNode = remove(current);
+            if (parent != null) {
+                if (parent.left == current) {
+                    parent.left = resultNode;
+                } else {
+                    parent.right = resultNode;
+                }
+            }
+            return resultValue;
+        } else if (key.compareTo(current.key) < 0) {
+            return removeHelper(key, value, current, current.left);
+        } else {
+            return removeHelper(key, value, current, current.right);
+        }
+    }
+
     /** Removes KEY from the tree if present
      *  returns VALUE removed,
      *  null on failed removal.
@@ -215,7 +237,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (root == null) {
+            return null;
+        }
+        return removeHelper(key, value, null, root);
     }
 
     @Override
