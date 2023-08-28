@@ -190,6 +190,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 } else {
                     parent.right = resultNode;
                 }
+            } else {
+                root = resultNode;
             }
             return resultValue;
         } else if (key.compareTo(current.key) < 0) {
@@ -212,6 +214,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 } else {
                     parent.right = resultNode;
                 }
+            } else {
+                root = resultNode;
             }
             return resultValue;
         } else if (key.compareTo(current.key) < 0) {
@@ -227,10 +231,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        if (root == null) {
-            return null;
+        V result = removeHelper(key, null, root);
+        if (result != null) {
+            --size;
         }
-        return removeHelper(key, null, root);
+        return result;
     }
 
     /** Removes the key-value entry for the specified key only if it is
@@ -239,10 +244,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        if (root == null) {
-            return null;
+        V result = removeHelper(key, value, null, root);
+        if (result != null) {
+            --size;
         }
-        return removeHelper(key, value, null, root);
+        return result;
     }
 
     @Override
