@@ -77,7 +77,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        Set<K> result = new HashSet<K>();
+        Set<K> result = new HashSet<>();
         for (ArrayMap<K, V> bucket : buckets)  {
             result.addAll(bucket.keySet());
         }

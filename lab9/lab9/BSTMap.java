@@ -2,6 +2,7 @@ package lab9;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -102,7 +103,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /**
      * Fills a Set with the keys from p, using postorder traversal.
      */
-    public void keySetHelper(Set<K> s, Node p) {
+    private void keySetHelper(Set<K> s, Node p) {
         if (p == null) {
             return ;
         }
@@ -152,11 +153,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else {
             return null;
         }
-        if (result == null) {
-            return p;
-        } else {
-            return result;
-        }
+        return Objects.requireNonNullElse(result, p);
     }
 
     private static <K extends Comparable<K>, V> BSTMap<K, V>.Node remove(BSTMap<K, V>.Node p) {
@@ -177,7 +174,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return p;
     }
 
-    public V removeHelper(K key, Node parent, Node current) {
+    private V removeHelper(K key, Node parent, Node current) {
         if (current == null) {
             return null;
         }
@@ -201,7 +198,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         }
     }
 
-    public V removeHelper(K key, V value, Node parent, Node current) {
+    private V removeHelper(K key, V value, Node parent, Node current) {
         if (current == null) {
             return null;
         }
