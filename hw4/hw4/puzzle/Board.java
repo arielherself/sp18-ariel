@@ -83,16 +83,9 @@ public class Board implements WorldState {
         int count = 0;
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
-                if (i == size - 1 && j == size - 1) {
-                    if (tiles[i][j] != 0) {
-                        ++count;
-                    }
-                } else {
-                    if (tiles[i][j] != i * size + j + 1) {
-                        ++count;
-                    }
+                if ((i != size - 1 || j != size - 1) && tiles[i][j] != i * size + j + 1) {
+                    ++count;
                 }
-
             }
         }
         return count;
@@ -102,9 +95,7 @@ public class Board implements WorldState {
         int distance = 0;
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
-                if (tiles[i][j] == 0) {
-                    distance += Math.abs(i - size + 1) + Math.abs(j - size + 1);
-                } else {
+                if (tiles[i][j] != 0) {
                     distance += Math.abs(i - (tiles[i][j] - 1) / size) + Math.abs(j - (tiles[i][j] - 1) % size);
                 }
             }
