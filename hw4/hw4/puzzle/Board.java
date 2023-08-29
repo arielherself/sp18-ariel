@@ -112,6 +112,9 @@ public class Board implements WorldState {
             return false;
         }
         Board z = (Board) y;
+        if (z.size != size) {
+            return false;
+        }
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 if (tiles[i][j] != z.tiles[i][j]) {
