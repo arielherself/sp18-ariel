@@ -25,9 +25,7 @@ public class Board implements WorldState {
         final int sizeX = array.length, sizeY = array[0].length;
         int[][] newArray = new int[sizeX][sizeY];
         for (int i = 0; i < sizeX; ++i) {
-            for (int j = 0; j < sizeY; ++j) {
-                newArray[i][j] = array[i][j];
-            }
+            System.arraycopy(array[i], 0, newArray[i], 0, sizeY);
         }
         return newArray;
     }
