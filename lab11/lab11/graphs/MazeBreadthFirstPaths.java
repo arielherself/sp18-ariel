@@ -29,9 +29,8 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
         Queue<Integer> queue = new LinkedList<>();
         int curV = maze.xyTo1D(sourceX, sourceY);
         final int target = maze.xyTo1D(targetX, targetY);
-        int distance = 0;
         queue.add(curV);
-        distTo[curV] = distance;
+        distTo[curV] = 0;
         edgeTo[curV] = curV;
         while (!queue.isEmpty()) {
             curV = queue.poll();
@@ -44,10 +43,9 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
                 if (!marked[vertex]) {
                     queue.add(vertex);
                     edgeTo[vertex] = curV;
-                    distTo[vertex] = distance + 1;
+                    distTo[vertex] = distTo[curV] + 1;
                 }
             }
-            ++distance;
             announce();
         }
     }
