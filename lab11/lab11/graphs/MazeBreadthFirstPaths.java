@@ -27,7 +27,6 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
     /** Conducts a breadth first search of the maze starting at the source. */
     private void bfs() {
         Queue<Integer> queue = new LinkedList<>();
-        int verticesNumber = maze.V();
         int curV = maze.xyTo1D(sourceX, sourceY);
         final int target = maze.xyTo1D(targetX, targetY);
         int distance = 0;
