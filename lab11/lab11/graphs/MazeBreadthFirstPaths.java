@@ -1,7 +1,10 @@
 package lab11.graphs;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
- *  @author Josh Hug
+ *  @author Josh Hug, Ariel
  */
 public class MazeBreadthFirstPaths extends MazeExplorer {
     /* Inherits public fields:
@@ -10,20 +13,50 @@ public class MazeBreadthFirstPaths extends MazeExplorer {
     public boolean[] marked;
     */
 
+    private final int sourceX, sourceY, targetX, targetY;
+
     public MazeBreadthFirstPaths(Maze m, int sourceX, int sourceY, int targetX, int targetY) {
         super(m);
         // Add more variables here!
+        this.sourceX = sourceX;
+        this.sourceY = sourceY;
+        this.targetX = targetX;
+        this.targetY = targetY;
     }
 
     /** Conducts a breadth first search of the maze starting at the source. */
     private void bfs() {
-        // TODO: Your code here. Don't forget to update distTo, edgeTo, and marked, as well as call announce()
+        Queue<Integer> queue = new LinkedList<>();
+        int verticesNumber = maze.V();
+        int curV = maze.xyTo1D(sourceX, sourceY);
+        final int target = maze.xyTo1D(targetX, targetY);
+        int distance = 0;
+        queue.add(curV);
+        distTo[curV] = distance;
+        edgeTo[curV] = curV;
+        while (!queue.isEmpty()) {
+            curV = queue.poll();
+            marked[curV] = true;
+            if (target == curV) {
+                announce();
+                return ;
+            }
+            for (int vertex : maze.adj(curV)) {
+                if (!marked[vertex]) {
+                    queue.add(vertex);
+                    edgeTo[vertex] = curV;
+                    distTo[vertex] = distance + 1;
+                }
+            }
+            ++distance;
+            announce();
+        }
     }
 
 
     @Override
     public void solve() {
-        // bfs();
+        bfs();
     }
 }
 
