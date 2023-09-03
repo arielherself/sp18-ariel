@@ -74,11 +74,14 @@ public class MergeSort {
             int md = items.size() / 2;
             Queue<Item> leftHalf = new Queue<>();
             Queue<Item> rightHalf = new Queue<>();
-            for (int i = 0; i < md; ++i) {
-                leftHalf.enqueue(items.dequeue());
-            }
-            while (!items.isEmpty()) {
-                rightHalf.enqueue(items.dequeue());
+            int count = 0;
+            for (Item i : items) {
+                if (count < md) {
+                    leftHalf.enqueue(i);
+                    ++count;
+                } else {
+                    rightHalf.enqueue(i);
+                }
             }
             return mergeSortedQueues(mergeSort(leftHalf), mergeSort(rightHalf));
         }
