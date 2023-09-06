@@ -66,33 +66,35 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        int diff = getDifference(arr);
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] += diff;
-        }
-        int[] sorted = naiveCountingSort(arr);
-        for (int i = 0; i < arr.length; ++i) {
-            sorted[i] -= diff;
-        }
-        return sorted;
-    }
-
-    private static int getDifference(int[] arr) {
-        int min = getMin(arr);
-        if (min >= 0) {
-            return 0;
-        } else {
-            return -min;
-        }
-    }
-
-    private static int getMin(int[] arr) {
-        int min = 0;
+        int posCount = 0, negCount = 0;
         for (int i : arr) {
-            if (i < min) {
-                min = i;
+            if (i >= 0) {
+                ++posCount;
+            } else {
+                ++negCount;
             }
         }
-        return min;
+        int[] posItems = new int[posCount], negItems = new int[negCount];
+        int p = 0, q = 0;
+        for (int i : arr) {
+            if (i >= 0) {
+                posItems[p++] = i;
+            } else {
+                negItems[q++] = - i;
+            }
+        }
+        posItems = naiveCountingSort(posItems);
+        negItems = naiveCountingSort(negItems);
+
+        int[] result = new int[arr.length];
+        for (int i = 0; i < arr.length; ++i) {
+            if (i < negItems.length) {
+                result[i] = - negItems[negItems.length - 1 - i];
+            } else {
+                result[i] = posItems[i - negItems.length];
+            }
+        }
+
+        return result;
     }
 }
