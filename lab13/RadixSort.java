@@ -16,8 +16,20 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        asciis = asciis.clone();
+
+        int maxLength = 0;
+        for (String s : asciis) {
+            if (s.length() > maxLength) {
+                maxLength = s.length();
+            }
+        }
+
+        for (int i = maxLength - 1; i >= 0; --i) {
+            sortHelperLSD(asciis, i);
+        }
+
+        return asciis;
     }
 
     /**
@@ -28,7 +40,27 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+        int[] start = new int[256], count = new int[256];
+        String[] result = new String[asciis.length];
+        for (String a : asciis) {
+            ++(count[charAt(a, index)]);
+        }
+        start[0] = 0;
+        for (int j = 1; j < 256; ++j) {
+            start[j] = start[j - 1] + count[j - 1];
+        }
+        for (String a : asciis) {
+            result[start[charAt(a, index)]++] = a;
+        }
+        System.arraycopy(result, 0, asciis, 0, asciis.length);
+    }
+
+    private static char charAt(String s, int i) {
+        if (s.length() <= i) {
+            return 0;
+        } else {
+            return s.charAt(i);
+        }
     }
 
     /**
@@ -44,5 +76,15 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+
+    public static void main(String[] args) {
+        String[] a = {"Hello", "I'm", "Ariel"};
+        a = sort(a);
+        for (String s : a) {
+            System.out.print(s);
+            System.out.print(" ");
+        }
+        System.out.println();
     }
 }
