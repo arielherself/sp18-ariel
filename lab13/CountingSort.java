@@ -14,6 +14,10 @@ public class CountingSort {
      * @return the sorted array
      */
     public static int[] naiveCountingSort(int[] arr) {
+        if (arr.length == 0) {
+            return arr;
+        }
+
         // find max
         int max = Integer.MIN_VALUE;
         for (int i : arr) {
